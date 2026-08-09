@@ -12,7 +12,7 @@ interface Hero3DViewerProps {
 /* ------------------------------------------------------------------ */
 /*  ISOMETRIC TRAY WITH DIMENSION LINES                               */
 /* ------------------------------------------------------------------ */
-function IsometricFloorTray({ mode, scrollProgress }: { mode: 'blueprint' | 'photorealistic', scrollProgress: number }) {
+function IsometricFloorTray({ mode }: { mode: 'blueprint' | 'photorealistic' }) {
   return (
     <group position={[0, -0.65, 0]}>
       {/* Base tray platform outline */}
@@ -179,7 +179,7 @@ function AirtechRotatingMotor({
   return (
     <group ref={groupRef} position={[0, 0, 0]}>
       {/* Floor Tray */}
-      <IsometricFloorTray mode={mode} scrollProgress={scrollProgress} />
+      <IsometricFloorTray mode={mode} />
 
       {/* Main Assembly Group */}
       <group position={[0, 0.25, 0]}>

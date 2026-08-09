@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll } from 'framer-motion';
 import { ArrowRight, Layers, Eye, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import BlueprintBlobBackground from './BlueprintBlobBackground';
