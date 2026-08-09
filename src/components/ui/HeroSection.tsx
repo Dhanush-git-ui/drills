@@ -84,7 +84,7 @@ export default function HeroSection() {
         <BlueprintBlobBackground />
 
         {/* CTA & Controls (Render Mode Switcher) */}
-        <div className="absolute top-6 right-6 md:right-12 z-40 pointer-events-auto">
+        <div className="absolute top-28 right-6 md:right-12 z-40 pointer-events-auto">
           <div className="hidden lg:flex items-center gap-2 p-1 bg-white/20 backdrop-blur-md rounded-full shadow-sm border border-white/30">
             <button
               onClick={() => setRenderMode('blueprint')}
@@ -121,7 +121,7 @@ export default function HeroSection() {
         {/* ================= STAGE 1 & 2: HERO TEXT OVERLAY (0 - 0.30 SCROLL) ================= */}
         <motion.div
           style={{ opacity: textOpacityVal, y: textYVal }}
-          className="relative mx-auto px-6 md:px-12 w-full h-full flex flex-col justify-center items-center text-center z-20 pointer-events-none"
+          className="relative mx-auto px-6 md:px-12 w-full h-full pt-28 flex flex-col justify-center items-center text-center z-20 pointer-events-none"
         >
           <div className="max-w-4xl space-y-6 flex flex-col items-center pointer-events-auto">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-50/80 border border-red-100 backdrop-blur-sm text-red-600 font-mono text-xs font-bold tracking-[0.2em] uppercase mb-6 shadow-sm">
