@@ -407,14 +407,14 @@ export default function Products() {
                     className="group border border-brand-bordergray rounded-2xl overflow-hidden bg-white hover:border-brand-red transition-all duration-300 flex flex-col justify-between hover:-translate-y-0.5 hover:shadow-lg"
                   >
                     {/* Visual box */}
-                    <div className="relative aspect-video flex items-center justify-center overflow-hidden bg-brand-softwhite">
+                    <div className="relative aspect-[4/3] flex items-center justify-center overflow-hidden bg-brand-softwhite">
                       {/* Subtle red glow accent */}
                       <div className="absolute top-0 right-0 w-40 h-40 rounded-full opacity-15 blur-3xl" style={{ background: 'radial-gradient(circle, #C8102E 0%, transparent 70%)' }} />
                       <img
                         src={prod.imageUrl}
                         alt={prod.name}
                         loading="lazy"
-                        className="relative z-10 w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500 drop-shadow-lg"
+                        className="relative z-10 w-full h-full object-contain p-2.5 group-hover:scale-105 transition-transform duration-500 drop-shadow-lg"
                         onError={(e) => {
                           (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=300';
                         }}

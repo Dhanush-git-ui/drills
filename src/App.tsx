@@ -10,6 +10,8 @@ import Quote from '@/pages/Quote';
 import About from '@/pages/About';
 import Contact from '@/pages/Contact';
 import Inventory from '@/pages/Inventory';
+import Brochure from '@/pages/Brochure';
+import CompanyLogo from '@/components/brochure/CompanyLogo';
 
 // Scroll to top helper on route change
 function ScrollToTop() {
@@ -27,6 +29,7 @@ function AppContent() {
   const { quoteItems } = useQuote();
   const location = useLocation();
 
+  const isBrochurePage = location.pathname === '/brochure';
   const isHeroPage = location.pathname === '/' || location.pathname === '/about';
 
   useEffect(() => {
@@ -46,118 +49,112 @@ function AppContent() {
   return (
     <div className="flex flex-col min-h-screen font-sans selection:bg-brand-red selection:text-white">
       {/* Sticky Header */}
-      <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          navScrolled
-            ? 'glass-nav py-4 shadow-sm'
-            : isHeroPage
-            ? 'bg-transparent py-6 border-b border-white/10'
-            : 'bg-white py-6 border-b border-brand-bordergray'
-        }`}
-      >
-        <div className="w-full px-8 md:px-16 flex items-center justify-between">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
-            <span className="w-8 h-8 rounded bg-brand-red flex items-center justify-center text-white font-display font-extrabold text-lg tracking-tighter">
-              P
-            </span>
-            <div className="flex flex-col leading-none">
-              <span className="font-display text-lg font-black tracking-tight text-brand-charcoal transition-colors">
-                PSR'S
-              </span>
-              <span className="font-mono text-[9px] font-bold tracking-widest text-brand-graphite transition-colors">
-                ROCK DRILLS
-              </span>
-            </div>
-          </Link>
-
-          {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-8 font-heading text-sm font-semibold uppercase tracking-wider">
-            {[
-              { label: 'Products', path: '/products' },
-              { label: 'About Us', path: '/about' },
-              { label: 'Contact', path: '/contact' },
-            ].map((link) => {
-              const isActive = location.pathname === link.path;
-              return (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  className={`relative py-1 transition-colors hover:text-brand-red ${
-                    isActive
-                      ? 'text-brand-red'
-                      : 'text-brand-charcoal'
-                  }`}
-                >
-                  {link.label}
-                  {isActive && (
-                    <span className="absolute bottom-0 left-0 w-full h-0.5 bg-brand-red animate-fade-in" />
-                  )}
-                </Link>
-              );
-            })}
-          </nav>
-
-          {/* Action & Mobilizer */}
-          <div className="flex items-center gap-4">
-            <Link
-              to="/quote"
-              className={`relative inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-heading text-xs font-semibold uppercase tracking-widest transition-all duration-300 border ${
-                navScrolled
-                  ? 'bg-brand-red border-brand-red text-white hover:bg-brand-crimson hover:shadow-lg'
-                  : 'bg-brand-red border-brand-red text-white hover:bg-brand-crimson'
-              }`}
-            >
-              Request Quote
-              {totalQuoteCount > 0 && (
-                <span className="w-5 h-5 rounded-full bg-brand-charcoal text-white flex items-center justify-center text-[10px] font-bold font-mono">
-                  {totalQuoteCount}
-                </span>
-              )}
+      {!isBrochurePage && (
+        <header
+          className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+            navScrolled
+              ? 'glass-nav py-3.5 shadow-sm bg-white/95 backdrop-blur-md'
+              : isHeroPage
+              ? 'bg-white/80 backdrop-blur-md py-4 border-b border-brand-bordergray/60'
+              : 'bg-white py-4 border-b border-brand-bordergray'
+          }`}
+        >
+          <div className="w-full px-6 md:px-12 flex items-center justify-between">
+            {/* Red & White PSRS Rock Drills Logo */}
+            <Link to="/" className="flex items-center gap-3 group">
+              <CompanyLogo variant="red" size="sm" showText={true} horizontal={true} />
             </Link>
 
-            {/* Mobile menu trigger */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-1.5 rounded-lg transition-colors text-brand-charcoal hover:bg-brand-lightgray"
-            >
-              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Navigation Drawer */}
-        {mobileMenuOpen && (
-          <div className="md:hidden absolute top-full left-0 right-0 bg-white border-b border-brand-bordergray shadow-xl py-6 px-6 animate-fade-in">
-            <nav className="flex flex-col gap-4 font-heading text-base font-bold uppercase tracking-wide">
+            {/* Desktop Navigation Links */}
+            <nav className="hidden md:flex items-center gap-8 font-heading text-sm font-semibold uppercase tracking-wider">
               {[
                 { label: 'Products', path: '/products' },
+                { label: 'Brochure', path: '/brochure' },
                 { label: 'About Us', path: '/about' },
                 { label: 'Contact', path: '/contact' },
-              ].map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`py-2 border-b border-brand-lightgray transition-colors hover:text-brand-red ${
-                    location.pathname === link.path ? 'text-brand-red' : 'text-brand-charcoal'
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
+              ].map((link) => {
+                const isActive = location.pathname === link.path;
+                return (
+                  <Link
+                    key={link.path}
+                    to={link.path}
+                    className={`relative py-1 transition-colors hover:text-brand-red ${
+                      isActive
+                        ? 'text-brand-red'
+                        : 'text-brand-charcoal'
+                    }`}
+                  >
+                    {link.label}
+                    {isActive && (
+                      <span className="absolute bottom-0 left-0 w-full h-0.5 bg-brand-red animate-fade-in" />
+                    )}
+                  </Link>
+                );
+              })}
+            </nav>
+
+            {/* Action & Mobilizer */}
+            <div className="flex items-center gap-4">
               <Link
                 to="/quote"
-                onClick={() => setMobileMenuOpen(false)}
-                className="mt-2 py-3 bg-brand-red text-white rounded-xl text-center flex items-center justify-center gap-2 hover:bg-brand-crimson"
+                className={`relative inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-heading text-xs font-semibold uppercase tracking-widest transition-all duration-300 border ${
+                  navScrolled
+                    ? 'bg-brand-red border-brand-red text-white hover:bg-brand-crimson hover:shadow-lg'
+                    : 'bg-brand-red border-brand-red text-white hover:bg-brand-crimson'
+                }`}
               >
-                Quote Builder list ({totalQuoteCount})
-                <ArrowRight size={16} />
+                Request Quote
+                {totalQuoteCount > 0 && (
+                  <span className="w-5 h-5 rounded-full bg-brand-charcoal text-white flex items-center justify-center text-[10px] font-bold font-mono">
+                    {totalQuoteCount}
+                  </span>
+                )}
               </Link>
-            </nav>
+
+              {/* Mobile menu trigger */}
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="md:hidden p-1.5 rounded-lg transition-colors text-brand-charcoal hover:bg-brand-lightgray"
+              >
+                {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+            </div>
           </div>
-        )}
-      </header>
+
+          {/* Mobile Navigation Drawer */}
+          {mobileMenuOpen && (
+            <div className="md:hidden absolute top-full left-0 right-0 bg-white border-b border-brand-bordergray shadow-xl py-6 px-6 animate-fade-in">
+              <nav className="flex flex-col gap-4 font-heading text-base font-bold uppercase tracking-wide">
+                {[
+                  { label: 'Products', path: '/products' },
+                  { label: 'Brochure', path: '/brochure' },
+                  { label: 'About Us', path: '/about' },
+                  { label: 'Contact', path: '/contact' },
+                ].map((link) => (
+                  <Link
+                    key={link.path}
+                    to={link.path}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`py-2 border-b border-brand-lightgray transition-colors hover:text-brand-red ${
+                      location.pathname === link.path ? 'text-brand-red' : 'text-brand-charcoal'
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+                <Link
+                  to="/quote"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="mt-2 py-3 bg-brand-red text-white rounded-xl text-center flex items-center justify-center gap-2 hover:bg-brand-crimson"
+                >
+                  Quote Builder list ({totalQuoteCount})
+                  <ArrowRight size={16} />
+                </Link>
+              </nav>
+            </div>
+          )}
+        </header>
+      )}
 
       {/* Main Pages Content */}
       <main className="flex-grow">
@@ -168,6 +165,7 @@ function AppContent() {
             <Route path="/spare-parts" element={<Navigate to="/products" replace />} />
             <Route path="/inventory" element={<Inventory />} />
             <Route path="/comparison" element={<Navigate to="/products" replace />} />
+            <Route path="/brochure" element={<Brochure />} />
             <Route path="/quote" element={<Quote />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
@@ -175,58 +173,52 @@ function AppContent() {
       </main>
 
       {/* Global Footer */}
-      <footer className="bg-brand-charcoal text-brand-white border-t border-brand-graphite/40 pt-16 pb-8">
-        <div className="w-full px-8 md:px-16 grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-          {/* Brand Info */}
-          <div className="space-y-6">
-            <div className="flex items-center gap-2">
-              <span className="w-8 h-8 rounded bg-brand-red flex items-center justify-center text-white font-display font-extrabold text-lg">
-                P
-              </span>
-              <div className="flex flex-col leading-none">
-                <span className="font-display text-lg font-black tracking-tight">PSR'S</span>
-                <span className="font-mono text-[9px] font-bold tracking-widest text-brand-white/60">
-                  ROCK DRILLS
-                </span>
+      {!isBrochurePage && (
+        <footer className="bg-brand-charcoal text-brand-white border-t border-brand-graphite/40 pt-16 pb-8">
+          <div className="w-full px-8 md:px-16 grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+            {/* Brand Info */}
+            <div className="space-y-6">
+              <div className="flex items-center gap-3">
+                <CompanyLogo variant="white" size="sm" showText={true} showSubtext={true} horizontal={true} />
+              </div>
+              <p className="font-sans text-sm text-brand-white/70 leading-relaxed">
+                Global manufacturer of heavy crawler rigs, pneumatic wagon drills, air motors, and high-strength drilling tools. Engineered for extreme terrains and deep-bore reliability.
+              </p>
+              <div className="flex gap-4">
+                <a href="#" className="p-2 rounded bg-brand-graphite/50 text-white hover:bg-brand-red transition-colors">
+                  <Layers size={18} />
+                </a>
+                <a href="#" className="p-2 rounded bg-brand-graphite/50 text-white hover:bg-brand-red transition-colors">
+                  <HeartHandshake size={18} />
+                </a>
               </div>
             </div>
-            <p className="font-sans text-sm text-brand-white/70 leading-relaxed">
-              Global manufacturer of premium wagon drills, crawler rigs, and DTH rock drilling accessories. Engineered for extreme terrains and deep-bore reliability.
-            </p>
-            <div className="flex gap-4">
-              <a href="#" className="p-2 rounded bg-brand-graphite/50 text-white hover:bg-brand-red transition-colors">
-                <Layers size={18} />
-              </a>
-              <a href="#" className="p-2 rounded bg-brand-graphite/50 text-white hover:bg-brand-red transition-colors">
-                <HeartHandshake size={18} />
-              </a>
+
+            {/* Quick Links */}
+            <div className="space-y-4">
+              <h5 className="font-heading text-sm font-bold uppercase tracking-wider text-brand-white/80">
+                Product Categories
+              </h5>
+              <ul className="space-y-2.5 font-sans text-sm text-brand-white/60">
+                <li><Link to="/products" className="hover:text-brand-red transition-colors">Wagon Drills</Link></li>
+                <li><Link to="/products" className="hover:text-brand-red transition-colors">Crawler Drills</Link></li>
+                <li><Link to="/products" className="hover:text-brand-red transition-colors">Inwell Drilling Rigs</Link></li>
+                <li><Link to="/products" className="hover:text-brand-red transition-colors">DTH Hammers & Bits</Link></li>
+                <li><Link to="/products" className="hover:text-brand-red transition-colors">Spare Parts & Spares</Link></li>
+              </ul>
             </div>
-          </div>
 
-          {/* Quick Links */}
-          <div className="space-y-4">
-            <h5 className="font-heading text-sm font-bold uppercase tracking-wider text-brand-white/80">
-              Product Categories
-            </h5>
-            <ul className="space-y-2.5 font-sans text-sm text-brand-white/60">
-              <li><Link to="/products" className="hover:text-brand-red transition-colors">Wagon Drills</Link></li>
-              <li><Link to="/products" className="hover:text-brand-red transition-colors">Crawler Drills</Link></li>
-              <li><Link to="/products" className="hover:text-brand-red transition-colors">Inwell Drilling Rigs</Link></li>
-              <li><Link to="/products" className="hover:text-brand-red transition-colors">DTH Hammers & Bits</Link></li>
-              <li><Link to="/products" className="hover:text-brand-red transition-colors">Spare Parts & Spares</Link></li>
-            </ul>
-          </div>
-
-          {/* Quick Links 2 */}
-          <div className="space-y-4">
-            <h5 className="font-heading text-sm font-bold uppercase tracking-wider text-brand-white/80">
-              Corporate
-            </h5>
-            <ul className="space-y-2.5 font-sans text-sm text-brand-white/60">
-              <li><Link to="/about" className="hover:text-brand-red transition-colors">About PSR'S</Link></li>
-              <li><Link to="/contact" className="hover:text-brand-red transition-colors">Contact Office</Link></li>
-            </ul>
-          </div>
+            {/* Quick Links 2 */}
+            <div className="space-y-4">
+              <h5 className="font-heading text-sm font-bold uppercase tracking-wider text-brand-white/80">
+                Corporate
+              </h5>
+              <ul className="space-y-2.5 font-sans text-sm text-brand-white/60">
+                <li><Link to="/about" className="hover:text-brand-red transition-colors">About PSR'S</Link></li>
+                <li><Link to="/brochure" className="hover:text-brand-red transition-colors text-brand-red font-medium">Company Brochure (PDF)</Link></li>
+                <li><Link to="/contact" className="hover:text-brand-red transition-colors">Contact Office</Link></li>
+              </ul>
+            </div>
 
           {/* Address and Contact info */}
           <div className="space-y-4">
@@ -260,6 +252,7 @@ function AppContent() {
           </div>
         </div>
       </footer>
+      )}
 
       {/* Floating WhatsApp Button */}
       <a

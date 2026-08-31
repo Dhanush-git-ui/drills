@@ -132,12 +132,12 @@ export default function ProductDetail() {
               {product.tagline}
             </p>
 
-            <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-brand-softwhite border border-brand-bordergray/60 mb-6">
+            <div className="relative w-full aspect-[4/3] sm:aspect-square md:aspect-[4/3] max-h-[460px] rounded-2xl overflow-hidden bg-brand-softwhite border border-brand-bordergray/60 mb-6 flex items-center justify-center">
               <img
                 src={product.imageUrl}
                 alt={product.name}
                 loading="lazy"
-                className="w-full h-full object-contain p-6 hover:scale-105 transition-transform duration-500"
+                className="w-full h-full object-contain p-3 sm:p-4 hover:scale-105 transition-transform duration-500"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=600';
                 }}
@@ -273,9 +273,8 @@ export default function ProductDetail() {
             </h4>
 
             <div className="space-y-3">
-              <a
-                href={product.brochureUrl}
-                download
+              <Link
+                to="/brochure"
                 className="flex items-center justify-between p-4 bg-white border border-brand-bordergray/60 rounded-xl hover:border-brand-red transition-all duration-300 group"
               >
                 <div className="flex items-center gap-3">
@@ -283,12 +282,12 @@ export default function ProductDetail() {
                     <FileText size={18} />
                   </div>
                   <div>
-                    <h5 className="font-heading text-xs font-bold uppercase tracking-wider text-brand-charcoal">Download Brochure</h5>
-                    <span className="font-sans text-[10px] text-brand-graphite/60">PDF catalog files (3.4 MB)</span>
+                    <h5 className="font-heading text-xs font-bold uppercase tracking-wider text-brand-charcoal group-hover:text-brand-red transition-colors">View Company Brochure</h5>
+                    <span className="font-sans text-[10px] text-brand-graphite/60">Print-Ready PDF Master (2026/27)</span>
                   </div>
                 </div>
                 <Download size={16} className="text-brand-graphite/40 group-hover:text-brand-red group-hover:translate-y-0.5 transition-all" />
-              </a>
+              </Link>
 
               <a
                 href={product.datasheetUrl}
