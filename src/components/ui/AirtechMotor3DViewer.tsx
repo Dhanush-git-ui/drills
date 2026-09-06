@@ -103,13 +103,24 @@ function AirtechRotatingMotor({
 
   // Materials pre-created for primitive attachment
   const mats = useMemo(() => {
+    const isBp = mode === 'blueprint';
     return {
       bpLine: new THREE.LineBasicMaterial({ color: 0xe11d48, linewidth: 1.5 }),
+      bpLineDimmed: new THREE.LineBasicMaterial({ color: 0xfca5a5, transparent: true, opacity: 0.25, linewidth: 1 }),
       bpBody: new THREE.MeshBasicMaterial({ color: '#fee2e2', transparent: true, opacity: 0.45 }),
+      bpBodyDimmed: new THREE.MeshBasicMaterial({ color: '#fee2e2', transparent: true, opacity: 0.1 }),
       metalBody: new THREE.MeshStandardMaterial({ color: '#2b2e33', metalness: 0.7, roughness: 0.4 }),
       metalChrome: new THREE.MeshStandardMaterial({ color: '#d6d9dc', metalness: 0.9, roughness: 0.2 }),
       metalCopper: new THREE.MeshStandardMaterial({ color: '#b87333', metalness: 0.8, roughness: 0.3 }),
-      highlight: new THREE.MeshBasicMaterial({ color: '#e11d48', wireframe: mode === 'blueprint' }),
+      highlightSolid: new THREE.MeshStandardMaterial({
+        color: '#ff0033',
+        emissive: '#ff0033',
+        emissiveIntensity: 1.2,
+        roughness: 0.15,
+        metalness: 0.85,
+      }),
+      highlightLine: new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 2.5 }),
+      highlightNeonLine: new THREE.LineBasicMaterial({ color: 0xff0033, linewidth: 2 }),
     };
   }, [mode]);
 
@@ -175,6 +186,14 @@ function AirtechRotatingMotor({
   });
 
   const isBp = mode === 'blueprint';
+  const isAnyActive = Boolean(activeHotspotId);
+  const isBearingActive = activeHotspotId === 'bearing';
+  const isStatorActive = activeHotspotId === 'stator';
+  const isRotorActive = activeHotspotId === 'rotor';
+  const isCoolingActive = activeHotspotId === 'cooling';
+
+  const defaultBodyMat = isBp ? (isAnyActive ? mats.bpBodyDimmed : mats.bpBody) : mats.metalBody;
+  const defaultLineMat = isBp ? (isAnyActive ? mats.bpLineDimmed : mats.bpLine) : mats.bpLine;
 
   return (
     <group ref={groupRef} position={[0, 0, 0]}>
@@ -190,10 +209,10 @@ function AirtechRotatingMotor({
              <boxGeometry args={[0.8, 0.08, 0.5]} />
              {isBp ? (
                <>
-                 <primitive object={mats.bpBody} attach="material" />
+                 <primitive object={defaultBodyMat} attach="material" />
                  <lineSegments>
                    <edgesGeometry args={[new THREE.BoxGeometry(0.8, 0.08, 0.5)]} />
-                   <primitive object={mats.bpLine} attach="material" />
+                   <primitive object={defaultLineMat} attach="material" />
                  </lineSegments>
                </>
              ) : (
@@ -205,10 +224,10 @@ function AirtechRotatingMotor({
              <boxGeometry args={[0.6, 0.12, 0.2]} />
              {isBp ? (
                <>
-                 <primitive object={mats.bpBody} attach="material" />
+                 <primitive object={defaultBodyMat} attach="material" />
                  <lineSegments>
                    <edgesGeometry args={[new THREE.BoxGeometry(0.6, 0.12, 0.2)]} />
-                   <primitive object={mats.bpLine} attach="material" />
+                   <primitive object={defaultLineMat} attach="material" />
                  </lineSegments>
                </>
              ) : (
@@ -220,16 +239,26 @@ function AirtechRotatingMotor({
         {/* ============ STATOR HOUSING (Fixed part) ============ */}
         <group>
           {/* Main Stator Body (Cylinder) */}
-          <mesh position={[0, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+          <mesh
+            position={[0, 0, 0]}
+            rotation={[0, 0, Math.PI / 2]}
+            scale={isStatorActive ? [1.06, 1.06, 1.06] : [1, 1, 1]}
+          >
             <cylinderGeometry args={[0.3, 0.3, 0.7, 32]} />
-            {activeHotspotId === 'stator' ? (
-              <primitive object={mats.highlight} attach="material" />
-            ) : isBp ? (
+            {isStatorActive ? (
               <>
-                <primitive object={mats.bpBody} attach="material" />
+                <primitive object={mats.highlightSolid} attach="material" />
                 <lineSegments>
                   <edgesGeometry args={[new THREE.CylinderGeometry(0.3, 0.3, 0.7, 32)]} />
-                  <lineBasicMaterial color={0xe11d48} linewidth={1.5} />
+                  <primitive object={mats.highlightLine} attach="material" />
+                </lineSegments>
+              </>
+            ) : isBp ? (
+              <>
+                <primitive object={defaultBodyMat} attach="material" />
+                <lineSegments>
+                  <edgesGeometry args={[new THREE.CylinderGeometry(0.3, 0.3, 0.7, 32)]} />
+                  <primitive object={defaultLineMat} attach="material" />
                 </lineSegments>
               </>
             ) : (
@@ -239,14 +268,25 @@ function AirtechRotatingMotor({
 
           {/* Cooling Fins (Ribbed Rings on the rear half of the housing) */}
           {[-0.1, 0, 0.1, 0.2, 0.3].map((x, i) => (
-             <mesh key={`fin-${i}`} position={[x, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+             <mesh
+               key={`fin-${i}`}
+               position={[x, 0, 0]}
+               rotation={[0, 0, Math.PI / 2]}
+               scale={isCoolingActive ? [1.08, 1.08, 1.08] : [1, 1, 1]}
+             >
                <cylinderGeometry args={[0.32, 0.32, 0.03, 32]} />
-               {activeHotspotId === 'cooling' ? (
-                 <primitive object={mats.highlight} attach="material" />
+               {isCoolingActive ? (
+                 <>
+                   <primitive object={mats.highlightSolid} attach="material" />
+                   <lineSegments>
+                     <edgesGeometry args={[new THREE.CylinderGeometry(0.32, 0.32, 0.03, 32)]} />
+                     <primitive object={mats.highlightLine} attach="material" />
+                   </lineSegments>
+                 </>
                ) : isBp ? (
                  <lineSegments>
                    <edgesGeometry args={[new THREE.CylinderGeometry(0.32, 0.32, 0.03, 32)]} />
-                   <lineBasicMaterial color={0xe11d48} />
+                   <primitive object={defaultLineMat} attach="material" />
                  </lineSegments>
                ) : (
                  <primitive object={mats.metalBody} attach="material" />
@@ -256,14 +296,22 @@ function AirtechRotatingMotor({
 
           {/* Terminal Box (Top) */}
           <group position={[0, 0.36, 0]}>
-             <mesh>
+             <mesh scale={isStatorActive ? [1.05, 1.05, 1.05] : [1, 1, 1]}>
                <boxGeometry args={[0.35, 0.15, 0.25]} />
-               {isBp ? (
+               {isStatorActive ? (
                  <>
-                   <primitive object={mats.bpBody} attach="material" />
+                   <primitive object={mats.highlightSolid} attach="material" />
                    <lineSegments>
                      <edgesGeometry args={[new THREE.BoxGeometry(0.35, 0.15, 0.25)]} />
-                     <lineBasicMaterial color={0xe11d48} linewidth={2} />
+                     <primitive object={mats.highlightLine} attach="material" />
+                   </lineSegments>
+                 </>
+               ) : isBp ? (
+                 <>
+                   <primitive object={defaultBodyMat} attach="material" />
+                   <lineSegments>
+                     <edgesGeometry args={[new THREE.BoxGeometry(0.35, 0.15, 0.25)]} />
+                     <primitive object={defaultLineMat} attach="material" />
                    </lineSegments>
                  </>
                ) : (
@@ -274,10 +322,18 @@ function AirtechRotatingMotor({
              <group ref={terminalBoxLidRef} position={[0, 0.08, 0]}>
                <mesh>
                  <boxGeometry args={[0.36, 0.02, 0.26]} />
-                 {isBp ? (
+                 {isStatorActive ? (
+                   <>
+                     <primitive object={mats.highlightSolid} attach="material" />
+                     <lineSegments>
+                       <edgesGeometry args={[new THREE.BoxGeometry(0.36, 0.02, 0.26)]} />
+                       <primitive object={mats.highlightLine} attach="material" />
+                     </lineSegments>
+                   </>
+                 ) : isBp ? (
                    <lineSegments>
                      <edgesGeometry args={[new THREE.BoxGeometry(0.36, 0.02, 0.26)]} />
-                     <primitive object={mats.bpLine} attach="material" />
+                     <primitive object={defaultLineMat} attach="material" />
                    </lineSegments>
                  ) : (
                    <primitive object={mats.metalBody} attach="material" />
@@ -287,25 +343,35 @@ function AirtechRotatingMotor({
              {/* Cable Glands */}
              <mesh position={[0.1, 0, 0.15]} rotation={[Math.PI / 2, 0, 0]}>
                <cylinderGeometry args={[0.04, 0.04, 0.06, 12]} />
-               <primitive object={isBp ? mats.bpLine : mats.metalChrome} attach="material" />
+               <primitive object={isBp ? (isStatorActive ? mats.highlightSolid : defaultLineMat) : mats.metalChrome} attach="material" />
              </mesh>
              <mesh position={[-0.1, 0, 0.15]} rotation={[Math.PI / 2, 0, 0]}>
                <cylinderGeometry args={[0.04, 0.04, 0.06, 12]} />
-               <primitive object={isBp ? mats.bpLine : mats.metalChrome} attach="material" />
+               <primitive object={isBp ? (isStatorActive ? mats.highlightSolid : defaultLineMat) : mats.metalChrome} attach="material" />
              </mesh>
           </group>
         </group>
 
         {/* ============ INNER STATOR WINDING ============ */}
         <group ref={statorWindingRef}>
-          <mesh position={[-0.2, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+          <mesh
+            position={[-0.2, 0, 0]}
+            rotation={[0, 0, Math.PI / 2]}
+            scale={isStatorActive ? [1.08, 1.08, 1.08] : [1, 1, 1]}
+          >
             <cylinderGeometry args={[0.22, 0.22, 0.2, 32]} />
-             {activeHotspotId === 'stator' ? (
-                <primitive object={mats.highlight} attach="material" />
+             {isStatorActive ? (
+               <>
+                 <primitive object={mats.highlightSolid} attach="material" />
+                 <lineSegments>
+                   <edgesGeometry args={[new THREE.CylinderGeometry(0.22, 0.22, 0.2, 32)]} />
+                   <primitive object={mats.highlightLine} attach="material" />
+                 </lineSegments>
+               </>
              ) : isBp ? (
                <lineSegments>
                  <edgesGeometry args={[new THREE.CylinderGeometry(0.22, 0.22, 0.2, 32)]} />
-                 <lineBasicMaterial color={0xe11d48} />
+                 <primitive object={defaultLineMat} attach="material" />
                </lineSegments>
              ) : (
                <primitive object={mats.metalCopper} attach="material" />
@@ -315,16 +381,26 @@ function AirtechRotatingMotor({
 
         {/* ============ REAR FAN COVER ============ */}
         <group ref={rearCoverRef}>
-          <mesh position={[0.4, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+          <mesh
+            position={[0.4, 0, 0]}
+            rotation={[0, 0, Math.PI / 2]}
+            scale={isCoolingActive ? [1.08, 1.08, 1.08] : [1, 1, 1]}
+          >
              <cylinderGeometry args={[0.26, 0.3, 0.15, 32]} />
-             {activeHotspotId === 'cooling' ? (
-                 <primitive object={mats.highlight} attach="material" />
-             ) : isBp ? (
+             {isCoolingActive ? (
                <>
-                 <primitive object={mats.bpBody} attach="material" />
+                 <primitive object={mats.highlightSolid} attach="material" />
                  <lineSegments>
                    <edgesGeometry args={[new THREE.CylinderGeometry(0.26, 0.3, 0.15, 32)]} />
-                   <primitive object={mats.bpLine} attach="material" />
+                   <primitive object={mats.highlightLine} attach="material" />
+                 </lineSegments>
+               </>
+             ) : isBp ? (
+               <>
+                 <primitive object={defaultBodyMat} attach="material" />
+                 <lineSegments>
+                   <edgesGeometry args={[new THREE.CylinderGeometry(0.26, 0.3, 0.15, 32)]} />
+                   <primitive object={defaultLineMat} attach="material" />
                  </lineSegments>
                </>
              ) : (
@@ -335,14 +411,17 @@ function AirtechRotatingMotor({
 
         {/* ============ REAR BEARING HOUSING ============ */}
         <group ref={rearBearingRef}>
-          <mesh position={[0.35, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+          <mesh
+            position={[0.35, 0, 0]}
+            rotation={[0, 0, Math.PI / 2]}
+          >
              <cylinderGeometry args={[0.1, 0.1, 0.05, 24]} />
              {isBp ? (
                <>
-                 <primitive object={mats.bpBody} attach="material" />
+                 <primitive object={defaultBodyMat} attach="material" />
                  <lineSegments>
                    <edgesGeometry args={[new THREE.CylinderGeometry(0.1, 0.1, 0.05, 24)]} />
-                   <lineBasicMaterial color={0xe11d48} linewidth={2} />
+                   <primitive object={defaultLineMat} attach="material" />
                  </lineSegments>
                </>
              ) : (
@@ -352,17 +431,25 @@ function AirtechRotatingMotor({
         </group>
 
         {/* ============ ROTOR ASSEMBLY ============ */}
-        <group ref={rotorRef}>
+        <group ref={rotorRef} scale={isRotorActive ? [1.06, 1.06, 1.06] : [1, 1, 1]}>
           <group ref={rotorSpinRef}>
             {/* Main Shaft */}
             <mesh position={[-0.2, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
                <cylinderGeometry args={[0.04, 0.04, 1.2, 16]} />
-               {isBp ? (
+               {isRotorActive ? (
                  <>
-                   <primitive object={mats.bpBody} attach="material" />
+                   <primitive object={mats.highlightSolid} attach="material" />
                    <lineSegments>
                      <edgesGeometry args={[new THREE.CylinderGeometry(0.04, 0.04, 1.2, 16)]} />
-                     <primitive object={mats.bpLine} attach="material" />
+                     <primitive object={mats.highlightLine} attach="material" />
+                   </lineSegments>
+                 </>
+               ) : isBp ? (
+                 <>
+                   <primitive object={defaultBodyMat} attach="material" />
+                   <lineSegments>
+                     <edgesGeometry args={[new THREE.CylinderGeometry(0.04, 0.04, 1.2, 16)]} />
+                     <primitive object={defaultLineMat} attach="material" />
                    </lineSegments>
                  </>
                ) : (
@@ -373,20 +460,26 @@ function AirtechRotatingMotor({
             {/* Shaft Key */}
             <mesh position={[-0.7, 0.04, 0]}>
                <boxGeometry args={[0.15, 0.02, 0.02]} />
-               <primitive object={isBp ? mats.bpLine : mats.metalChrome} attach="material" />
+               <primitive object={isBp ? (isRotorActive ? mats.highlightSolid : defaultLineMat) : mats.metalChrome} attach="material" />
             </mesh>
 
             {/* Rotor Lamination Core (Inside Stator) */}
             <mesh position={[-0.1, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
                <cylinderGeometry args={[0.18, 0.18, 0.4, 32]} />
-               {activeHotspotId === 'rotor' ? (
-                  <primitive object={mats.highlight} attach="material" />
-               ) : isBp ? (
+               {isRotorActive ? (
                  <>
-                   <primitive object={mats.bpBody} attach="material" />
+                   <primitive object={mats.highlightSolid} attach="material" />
                    <lineSegments>
                      <edgesGeometry args={[new THREE.CylinderGeometry(0.18, 0.18, 0.4, 32)]} />
-                     <lineBasicMaterial color={0xe11d48} linewidth={1.5} />
+                     <primitive object={mats.highlightLine} attach="material" />
+                   </lineSegments>
+                 </>
+               ) : isBp ? (
+                 <>
+                   <primitive object={defaultBodyMat} attach="material" />
+                   <lineSegments>
+                     <edgesGeometry args={[new THREE.CylinderGeometry(0.18, 0.18, 0.4, 32)]} />
+                     <primitive object={defaultLineMat} attach="material" />
                    </lineSegments>
                  </>
                ) : (
@@ -401,7 +494,7 @@ function AirtechRotatingMotor({
                  {isBp && (
                    <lineSegments>
                      <edgesGeometry args={[new THREE.BoxGeometry(0.4, 0.36, 0.01)]} />
-                     <lineBasicMaterial color={0xe11d48} opacity={0.3} transparent />
+                     <primitive object={isRotorActive ? mats.highlightLine : defaultLineMat} attach="material" />
                    </lineSegments>
                  )}
               </mesh>
@@ -411,16 +504,26 @@ function AirtechRotatingMotor({
 
         {/* ============ FRONT BEARING HOUSING ============ */}
         <group ref={frontBearingRef}>
-          <mesh position={[-0.43, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+          <mesh
+            position={[-0.43, 0, 0]}
+            rotation={[0, 0, Math.PI / 2]}
+            scale={isBearingActive ? [1.14, 1.14, 1.14] : [1, 1, 1]}
+          >
              <cylinderGeometry args={[0.12, 0.12, 0.06, 24]} />
-             {activeHotspotId === 'bearing' ? (
-                <primitive object={mats.highlight} attach="material" />
-             ) : isBp ? (
+             {isBearingActive ? (
                <>
-                 <primitive object={mats.bpBody} attach="material" />
+                 <primitive object={mats.highlightSolid} attach="material" />
                  <lineSegments>
                    <edgesGeometry args={[new THREE.CylinderGeometry(0.12, 0.12, 0.06, 24)]} />
-                   <lineBasicMaterial color={0xe11d48} linewidth={2} />
+                   <primitive object={mats.highlightLine} attach="material" />
+                 </lineSegments>
+               </>
+             ) : isBp ? (
+               <>
+                 <primitive object={defaultBodyMat} attach="material" />
+                 <lineSegments>
+                   <edgesGeometry args={[new THREE.CylinderGeometry(0.12, 0.12, 0.06, 24)]} />
+                   <primitive object={defaultLineMat} attach="material" />
                  </lineSegments>
                </>
              ) : (
@@ -431,14 +534,26 @@ function AirtechRotatingMotor({
 
         {/* ============ FRONT END PLATE ============ */}
         <group ref={frontPlateRef}>
-          <mesh position={[-0.38, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+          <mesh
+            position={[-0.38, 0, 0]}
+            rotation={[0, 0, Math.PI / 2]}
+            scale={isBearingActive ? [1.06, 1.06, 1.06] : [1, 1, 1]}
+          >
              <cylinderGeometry args={[0.3, 0.3, 0.06, 32]} />
-             {isBp ? (
+             {isBearingActive ? (
                <>
-                 <primitive object={mats.bpBody} attach="material" />
+                 <primitive object={mats.highlightSolid} attach="material" />
                  <lineSegments>
                    <edgesGeometry args={[new THREE.CylinderGeometry(0.3, 0.3, 0.06, 32)]} />
-                   <primitive object={mats.bpLine} attach="material" />
+                   <primitive object={mats.highlightLine} attach="material" />
+                 </lineSegments>
+               </>
+             ) : isBp ? (
+               <>
+                 <primitive object={defaultBodyMat} attach="material" />
+                 <lineSegments>
+                   <edgesGeometry args={[new THREE.CylinderGeometry(0.3, 0.3, 0.06, 32)]} />
+                   <primitive object={defaultLineMat} attach="material" />
                  </lineSegments>
                </>
              ) : (

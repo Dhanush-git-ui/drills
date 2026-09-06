@@ -41,6 +41,16 @@
   }
 }
 
+/* Z-Index Layering Utilities */
+.z-0 { z-index: 0; }
+.z-10 { z-index: 10; }
+.z-20 { z-index: 20; }
+.z-30 { z-index: 30; }
+.z-40 { z-index: 40; }
+.z-50 { z-index: 50; }
+.z-\[60\] { z-index: 60; }
+.z-\[100\] { z-index: 100; }
+
 /* Base Customizations */
 :root {
   font-family: var(--font-sans);
@@ -209,8 +219,10 @@ body {
     print-color-adjust: exact !important;
   }
 
-  .no-print, header, footer, .custom-cursor, .brochure-toolbar {
+  .no-print, header, footer, .custom-cursor, .brochure-toolbar, .whatsapp-floating-widget, [aria-label*="WhatsApp"], [aria-label*="whatsapp"] {
     display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
   }
 
   .brochure-print-container {

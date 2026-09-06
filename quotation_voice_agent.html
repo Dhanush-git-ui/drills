@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Commercial Quotation - AI Voice Calling Agent</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 10mm 12mm 10mm 12mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #0f172a;
+      background-color: #ffffff;
+      font-size: 9.5px;
+      line-height: 1.4;
+    }
+
+    .page {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .page-break {
+      page-break-after: always;
+      break-after: page;
+    }
+
+    .no-break {
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #0f172a;
+      margin-bottom: 10px;
+    }
+
+    .logo-area h1 {
+      font-size: 17px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.3px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .logo-badge {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #ffffff;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .subtitle {
+      font-size: 10px;
+      color: #64748b;
+      margin-top: 2px;
+      font-weight: 500;
+    }
+
+    .quote-meta {
+      text-align: right;
+    }
+
+    .quote-badge {
+      display: inline-block;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1d4ed8;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 5px;
+      margin-bottom: 3px;
+    }
+
+    .meta-line {
+      font-size: 9px;
+      color: #475569;
+    }
+
+    .meta-line strong {
+      color: #0f172a;
+    }
+
+    /* Parties Section */
+    .parties-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .party-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 7px 10px;
+    }
+
+    .party-title {
+      font-size: 8.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #64748b;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+
+    .party-name {
+      font-size: 11px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .party-desc {
+      font-size: 9px;
+      color: #64748b;
+    }
+
+    /* Hero Summary Card */
+    .hero-summary {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #ffffff;
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .hero-left h2 {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #93c5fd;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+
+    .hero-left p {
+      font-size: 9.5px;
+      color: #cbd5e1;
+      max-width: 440px;
+      line-height: 1.35;
+    }
+
+    .hero-right {
+      text-align: right;
+    }
+
+    .total-label {
+      font-size: 8.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #94a3b8;
+      font-weight: 600;
+    }
+
+    .total-amount {
+      font-size: 22px;
+      font-weight: 800;
+      color: #38bdf8;
+      line-height: 1.1;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .total-caption {
+      font-size: 8.5px;
+      color: #94a3b8;
+    }
+
+    /* Section Headings */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      margin-bottom: 6px;
+      padding-bottom: 3px;
+      border-bottom: 1.5px solid #e2e8f0;
+    }
+
+    .section-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 17px;
+      height: 17px;
+      background: #eff6ff;
+      color: #2563eb;
+      border-radius: 4px;
+      font-weight: 800;
+      font-size: 10px;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 800;
+      color: #0f172a;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .section-tag {
+      margin-left: auto;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    .tag-blue {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+    }
+
+    .tag-emerald {
+      background: #ecfdf5;
+      color: #047857;
+      border: 1px solid #a7f3d0;
+    }
+
+    /* Tables */
+    .table-wrapper {
+      margin-bottom: 8px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9px;
+    }
+
+    th {
+      background: #f8fafc;
+      color: #475569;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      padding: 5px 8px;
+      border-bottom: 1px solid #e2e8f0;
+      text-align: left;
+      font-size: 8px;
+    }
+
+    td {
+      padding: 4.5px 8px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:nth-child(even) {
+      background: #fcfdfe;
+    }
+
+    .item-name {
+      font-weight: 700;
+      color: #0f172a;
+      font-size: 9.5px;
+    }
+
+    .item-sub {
+      color: #64748b;
+      font-size: 8px;
+    }
+
+    .vendor-pill {
+      display: inline-block;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: #1e293b;
+      font-weight: 700;
+      font-size: 8.5px;
+      padding: 1.5px 5px;
+      border-radius: 3px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .col-price {
+      text-align: right;
+      font-weight: 700;
+      color: #0f172a;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9.5px;
+    }
+
+    .table-total-row {
+      background: #f8fafc !important;
+      font-weight: 800;
+      border-top: 1.5px solid #cbd5e1;
+    }
+
+    .table-total-row td {
+      font-size: 9.5px;
+      color: #0f172a;
+      padding: 6px 8px;
+    }
+
+    /* Architecture Visual */
+    .arch-container {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 8px 10px;
+      margin-bottom: 8px;
+    }
+
+    .arch-flow {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .arch-node {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      padding: 6px 4px;
+      text-align: center;
+      flex: 1;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+
+    .arch-node.highlight {
+      border-color: #3b82f6;
+      background: #eff6ff;
+    }
+
+    .arch-node-title {
+      font-weight: 700;
+      font-size: 8.5px;
+      color: #0f172a;
+    }
+
+    .arch-node-sub {
+      font-size: 7.5px;
+      color: #64748b;
+      margin-top: 1px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .arch-arrow {
+      color: #94a3b8;
+      font-weight: 800;
+      font-size: 10px;
+    }
+
+    /* Feature Grid / Inclusions */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 5px;
+      padding: 6px 8px;
+    }
+
+    .check-icon {
+      color: #10b981;
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1;
+      margin-top: 1px;
+    }
+
+    .feature-text-title {
+      font-weight: 700;
+      color: #0f172a;
+      font-size: 9px;
+    }
+
+    .feature-text-desc {
+      font-size: 8px;
+      color: #64748b;
+      margin-top: 1px;
+    }
+
+    /* Highlight Banner / Unit Economics */
+    .banner-box {
+      background: #eff6ff;
+      border-left: 3px solid #2563eb;
+      border-radius: 0 5px 5px 0;
+      padding: 6px 10px;
+      margin-bottom: 6px;
+      font-size: 8.5px;
+      color: #1e3a8a;
+    }
+
+    .banner-box strong {
+      color: #1d4ed8;
+    }
+
+    /* Timeline and Milestones */
+    .timeline-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .timeline-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 5px;
+      padding: 6px;
+    }
+
+    .timeline-day {
+      font-size: 7.5px;
+      font-weight: 700;
+      color: #2563eb;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .timeline-title {
+      font-size: 9px;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 1px 0;
+    }
+
+    .timeline-desc {
+      font-size: 7.8px;
+      color: #64748b;
+      line-height: 1.25;
+    }
+
+    /* Terms & Signature */
+    .terms-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 7px 10px;
+      margin-bottom: 8px;
+    }
+
+    .terms-box ul {
+      padding-left: 12px;
+      font-size: 8.5px;
+      color: #475569;
+    }
+
+    .terms-box li {
+      margin-bottom: 2px;
+    }
+
+    .signature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 6px;
+      margin-bottom: 6px;
+    }
+
+    .signature-card {
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 8px 10px;
+      background: #ffffff;
+    }
+
+    .sig-line {
+      margin-top: 22px;
+      border-top: 1px solid #94a3b8;
+      padding-top: 3px;
+    }
+
+    .sig-name {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .sig-title {
+      font-size: 8px;
+      color: #64748b;
+    }
+
+    /* Footer */
+    .footer {
+      padding-top: 6px;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      color: #94a3b8;
+      font-size: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== PAGE 1 ==================== -->
+  <div class="page page-break">
+    <div>
+      <!-- HEADER -->
+      <div class="header">
+        <div class="logo-area">
+          <h1>AI VOICE AGENT <span class="logo-badge">ENTERPRISE PROPOSAL</span></h1>
+          <div class="subtitle">Next-Gen Autonomous Calling Agent & Production Cloud Infrastructure</div>
+        </div>
+        <div class="quote-meta">
+          <div class="quote-badge">QUOTE REF: #VA-2026-35K</div>
+          <div class="meta-line"><strong>Date:</strong> Current Production Release</div>
+          <div class="meta-line"><strong>Validity:</strong> 30 Days</div>
+        </div>
+      </div>
+
+      <!-- PARTIES INFO -->
+      <div class="parties-grid">
+        <div class="party-card">
+          <div class="party-title">Prepared For (Client)</div>
+          <div class="party-name">Valued Enterprise Client</div>
+          <div class="party-desc">Automated Inbound & Outbound Calling Pipeline</div>
+        </div>
+        <div class="party-card">
+          <div class="party-title">Prepared By (Engineering Team)</div>
+          <div class="party-name">AI Voice & Cloud Engineering Solutions</div>
+          <div class="party-desc">Full-Stack Voice AI, Telephony & DevOps Architecture</div>
+        </div>
+      </div>
+
+      <!-- HERO SUMMARY -->
+      <div class="hero-summary">
+        <div class="hero-left">
+          <h2>Commercial Summary</h2>
+          <p>Turnkey production setup including custom programming, prompt engineering, Plivo telephony bridge, STT/TTS engine, and pre-funded cloud infrastructure.</p>
+        </div>
+        <div class="hero-right">
+          <div class="total-label">Total Commercial Investment</div>
+          <div class="total-amount">₹35,000</div>
+          <div class="total-caption">All-Inclusive (Dev ₹25K + Infra/Telephony ₹10K)</div>
+        </div>
+      </div>
+
+      <!-- SECTION 1: DEV COST -->
+      <div class="section-header">
+        <div class="section-icon">1</div>
+        <div class="section-title">Core Development & Custom Engineering</div>
+        <div class="section-tag tag-blue">DEVELOPMENT: ₹25,000</div>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 28%;">Scope & Deliverable</th>
+              <th style="width: 56%;">Technical Description & Implementation Details</th>
+              <th style="width: 16%; text-align: right;">Amount (INR)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="item-name">Real-Time Voice Pipeline Engine</div>
+                <div class="item-sub">Sub-600ms latency architecture</div>
+              </td>
+              <td>Full bi-directional WebSocket streaming engine connecting telephony audio streams with live transcription, intelligence reasoning, and voice generation. Includes smart interruption (barge-in) and human-like turn-taking.</td>
+              <td class="col-price">₹8,000</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="item-name">Custom Prompt & Persona Engineering</div>
+                <div class="item-sub">Domain logic & conversational guardrails</div>
+              </td>
+              <td>Crafting specialized conversational prompt scripts, persona tone matching, objection handling, structured Q&A, entity extraction (names, emails, dates), and strict hallucination guardrails.</td>
+              <td class="col-price">₹4,500</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="item-name">Telephony & Webhook Bridge</div>
+                <div class="item-sub">Plivo / Twilio integration</div>
+              </td>
+              <td>Configuring automated outbound campaign dialers, inbound call routing, call answer/hangup hooks, DTMF keypad support, and live call transfer to human agents.</td>
+              <td class="col-price">₹4,500</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="item-name">Lead Database & CRM Integration</div>
+                <div class="item-sub">PostgreSQL / Supabase + Webhooks</div>
+              </td>
+              <td>Automated real-time logging of caller numbers, duration, audio recordings, timestamped transcripts, AI sentiment classification, and instant webhook sync to Google Sheets / CRM.</td>
+              <td class="col-price">₹4,000</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="item-name">Production Cloud Deployment & DevOps</div>
+                <div class="item-sub">Docker, Nginx & 24/7 PM2 monitoring</div>
+              </td>
+              <td>Containerizing application with Docker, configuring Nginx reverse proxy with SSL encryption, setup auto-healing daemon processes, and health check monitoring.</td>
+              <td class="col-price">₹2,500</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="item-name">Testing, QA & Voice Tuning</div>
+                <div class="item-sub">50+ automated & manual test calls</div>
+              </td>
+              <td>Noise cancellation calibration, Indian accent speech recognition testing, latency minimization, and failover recovery testing before final handover.</td>
+              <td class="col-price">₹1,500</td>
+            </tr>
+            <tr class="table-total-row">
+              <td colspan="2">TOTAL ENGINEERING & CUSTOM DEVELOPMENT INVESTMENT</td>
+              <td class="col-price" style="color: #2563eb; font-size: 10.5px;">₹25,000</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- SECTION 2: WHAT WE ARE BUYING & WHERE -->
+      <div class="section-header">
+        <div class="section-icon">2</div>
+        <div class="section-title">Production Infrastructure, Telephony & API Runway</div>
+        <div class="section-tag tag-emerald">INFRASTRUCTURE: ₹10,000</div>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 25%;">What We Are Buying</th>
+              <th style="width: 20%;">Where We Buy (Vendor)</th>
+              <th style="width: 41%;">Purpose & Technical Reason</th>
+              <th style="width: 14%; text-align: right;">Allocated Cost</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="item-name">Virtual Number & SIP Trunk</div>
+                <div class="item-sub">Telephony Carrier Route</div>
+              </td>
+              <td><span class="vendor-pill">Plivo.com</span> / Twilio</td>
+              <td>Dedicated virtual phone number for outbound calling and inbound call handling, plus initial call-minute carrier balance (~2,500+ mins).</td>
+              <td class="col-price">₹2,500</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="item-name">Real-Time Speech-to-Text</div>
+                <div class="item-sub">Streaming Audio Transcriber</div>
+              </td>
+              <td><span class="vendor-pill">Deepgram Nova-2</span></td>
+              <td>Converts caller speech into text in under 150ms with deep accent recognition and acoustic noise filtering. Pre-funded for ~3,000+ mins.</td>
+              <td class="col-price">₹2,000</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="item-name">LLM Intelligence Engine</div>
+                <div class="item-sub">Conversation Reasoning Brain</div>
+              </td>
+              <td><span class="vendor-pill">OpenAI / Groq</span></td>
+              <td>High-speed conversational reasoning using GPT-4o-mini / Llama-3.3-70B. Pre-loaded token balance (~150,000+ dialog turns).</td>
+              <td class="col-price">₹2,000</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="item-name">Voice Synthesis (TTS)</div>
+                <div class="item-sub">Human-like Voice Engine</div>
+              </td>
+              <td><span class="vendor-pill">Cartesia / ElevenLabs</span></td>
+              <td>Low-latency neural voice synthesis producing natural human cadence, breathing, and friendly tone. Covers ~2,000 mins of voice generation.</td>
+              <td class="col-price">₹2,000</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="item-name">Dedicated Cloud VPS</div>
+                <div class="item-sub">2 vCPU, 4GB RAM Runtime</div>
+              </td>
+              <td><span class="vendor-pill">Hetzner / AWS / DO</span></td>
+              <td>High-uptime cloud server hosting the live WebSocket gateway, database, webhook listener, and task queue. Includes 3 months hosting.</td>
+              <td class="col-price">₹1,200</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="item-name">Domain, SSL & Security</div>
+                <div class="item-sub">Enterprise DDoS & WSS</div>
+              </td>
+              <td><span class="vendor-pill">Cloudflare / Namecheap</span></td>
+              <td>Custom domain endpoint routing with end-to-end SSL encryption for ultra-secure WebSockets (`wss://`) and edge acceleration.</td>
+              <td class="col-price">₹300</td>
+            </tr>
+            <tr class="table-total-row">
+              <td colspan="3">TOTAL INFRASTRUCTURE, TELEPHONY & API RUNWAY CREDITS</td>
+              <td class="col-price" style="color: #047857; font-size: 10.5px;">₹10,000</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- FOOTER PAGE 1 -->
+    <div class="footer">
+      <div>AI Voice Agent Commercial Proposal • Confidential</div>
+      <div>Total Budget: ₹35,000 INR (Dev: ₹25K + Infra: ₹10K) • Page 1 of 2</div>
+    </div>
+  </div>
+
+
+  <!-- ==================== PAGE 2 ==================== -->
+  <div class="page">
+    <div>
+      <!-- SECTION 3: ARCHITECTURE FLOW -->
+      <div class="section-header" style="margin-top: 0;">
+        <div class="section-icon">3</div>
+        <div class="section-title">Production System Architecture Pipeline</div>
+      </div>
+
+      <div class="arch-container">
+        <div class="arch-flow">
+          <div class="arch-node">
+            <div class="arch-node-title">📞 Caller</div>
+            <div class="arch-node-sub">Inbound / Outbound</div>
+          </div>
+          <div class="arch-arrow">➔</div>
+          <div class="arch-node highlight">
+            <div class="arch-node-title">📱 Plivo Telephony</div>
+            <div class="arch-node-sub">SIP / Webhook Bridge</div>
+          </div>
+          <div class="arch-arrow">➔</div>
+          <div class="arch-node">
+            <div class="arch-node-title">⚡ Deepgram STT</div>
+            <div class="arch-node-sub">&lt;150ms Transcribe</div>
+          </div>
+          <div class="arch-arrow">➔</div>
+          <div class="arch-node highlight">
+            <div class="arch-node-title">🧠 OpenAI GPT-4o-mini</div>
+            <div class="arch-node-sub">Reasoning Engine</div>
+          </div>
+          <div class="arch-arrow">➔</div>
+          <div class="arch-node">
+            <div class="arch-node-title">🎙️ Cartesia Sonic</div>
+            <div class="arch-node-sub">Natural Voice Output</div>
+          </div>
+          <div class="arch-arrow">➔</div>
+          <div class="arch-node highlight">
+            <div class="arch-node-title">📊 CRM / DB</div>
+            <div class="arch-node-sub">Supabase + Webhooks</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 4: POST-LAUNCH OPERATING ECONOMICS -->
+      <div class="section-header">
+        <div class="section-icon">4</div>
+        <div class="section-title">Post-Launch Operating Cost per Call Minute (Post Runway)</div>
+      </div>
+
+      <div class="banner-box">
+        <strong>Transparent Unit Economics:</strong> Once the initial ₹10,000 credit package is utilized, the ongoing operational cost is purely pay-as-you-go based on exact usage:
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 32%;">Service Layer</th>
+              <th style="width: 26%;">Provider</th>
+              <th style="width: 24%;">Billing Model</th>
+              <th style="width: 18%; text-align: right;">Cost / Minute (INR)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Telephony Outbound Minutes</td>
+              <td>Plivo / Twilio</td>
+              <td>Per second / min connected</td>
+              <td class="col-price">₹0.60 – ₹0.90 / min</td>
+            </tr>
+            <tr>
+              <td>Real-Time Speech-to-Text (STT)</td>
+              <td>Deepgram Nova-2</td>
+              <td>Per second of streaming audio</td>
+              <td class="col-price">₹0.35 / min</td>
+            </tr>
+            <tr>
+              <td>Language Model Intelligence (LLM)</td>
+              <td>OpenAI GPT-4o-mini</td>
+              <td>Per 1K input/output tokens</td>
+              <td class="col-price">₹0.18 – ₹0.25 / min</td>
+            </tr>
+            <tr>
+              <td>Human-like Voice Synthesis (TTS)</td>
+              <td>Cartesia Sonic</td>
+              <td>Per character generated</td>
+              <td class="col-price">₹0.40 – ₹0.60 / min</td>
+            </tr>
+            <tr class="table-total-row">
+              <td colspan="3">ESTIMATED TOTAL COMBINED OPERATING COST PER CALL MINUTE</td>
+              <td class="col-price" style="color: #0f172a; font-size: 10px;">~₹1.60 – ₹2.20 / min</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- SECTION 5: INCLUSIONS & FEATURES -->
+      <div class="section-header">
+        <div class="section-icon">5</div>
+        <div class="section-title">Key Capabilities & Features Included in Scope</div>
+      </div>
+
+      <div class="feature-grid">
+        <div class="feature-item">
+          <div class="check-icon">✓</div>
+          <div>
+            <div class="feature-text-title">Smart Barge-In & Interruption</div>
+            <div class="feature-text-desc">AI instantly pauses speaking the millisecond a human interrupts.</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="check-icon">✓</div>
+          <div>
+            <div class="feature-text-title">Automated Lead Qualification</div>
+            <div class="feature-text-desc">Extracts client interest, budget, timeline, and booking details.</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="check-icon">✓</div>
+          <div>
+            <div class="feature-text-title">Live Call Transfer to Human Agent</div>
+            <div class="feature-text-desc">Warm transfers high-value callers to sales team when requested.</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="check-icon">✓</div>
+          <div>
+            <div class="feature-text-title">Automated Transcripts & CRM Push</div>
+            <div class="feature-text-desc">Full transcript, audio recording, and summary sent via webhook.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 6: TIMELINE & MILESTONES -->
+      <div class="section-header">
+        <div class="section-icon">6</div>
+        <div class="section-title">Implementation Timeline (7 to 8 Days to Production)</div>
+      </div>
+
+      <div class="timeline-grid">
+        <div class="timeline-card">
+          <div class="timeline-day">Days 1 – 2</div>
+          <div class="timeline-title">Provisioning</div>
+          <div class="timeline-desc">Plivo number setup, API keys, and VPS cloud configuration.</div>
+        </div>
+        <div class="timeline-card">
+          <div class="timeline-day">Days 3 – 4</div>
+          <div class="timeline-title">Core Engine</div>
+          <div class="timeline-desc">Prompt scripts, objection handling, and voice persona tuning.</div>
+        </div>
+        <div class="timeline-card">
+          <div class="timeline-day">Days 5 – 6</div>
+          <div class="timeline-title">Integration</div>
+          <div class="timeline-desc">WebSocket bridge, telephony hooks, and Supabase CRM link.</div>
+        </div>
+        <div class="timeline-card">
+          <div class="timeline-day">Days 7 – 8</div>
+          <div class="timeline-title">QA & Go-Live</div>
+          <div class="timeline-desc">Latency optimization, end-to-end testing, and production deployment.</div>
+        </div>
+      </div>
+
+      <!-- SECTION 7: COMMERCIAL TERMS & ACCEPTANCE -->
+      <div class="section-header">
+        <div class="section-icon">7</div>
+        <div class="section-title">Commercial Terms, Handover & Acceptance</div>
+      </div>
+
+      <div class="terms-box">
+        <ul>
+          <li><strong>Payment Schedule:</strong> 40% Advance Kickoff (₹14,000) • 40% Working Voice Demo (₹14,000) • 20% Production Handover (₹7,000).</li>
+          <li><strong>100% Client Ownership:</strong> Full Git source code repository and direct account ownership of Plivo, OpenAI, Deepgram, and Cloud VPS.</li>
+          <li><strong>Warranty & Support:</strong> 30 days of post-deployment monitoring, bug fixes, and prompt refinements included at zero additional cost.</li>
+        </ul>
+      </div>
+
+      <div class="signature-grid">
+        <div class="signature-card">
+          <div class="party-title">Service Provider</div>
+          <div class="sig-line">
+            <div class="sig-name">Authorized Engineering Lead</div>
+            <div class="sig-title">AI Voice Solutions & Architecture</div>
+          </div>
+        </div>
+        <div class="signature-card">
+          <div class="party-title">Client Acceptance</div>
+          <div class="sig-line">
+            <div class="sig-name">Client Representative Signature</div>
+            <div class="sig-title">Accepted & Approved to Proceed</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER PAGE 2 -->
+    <div class="footer">
+      <div>AI Voice Agent Commercial Proposal • Confidential</div>
+      <div>Total Budget: ₹35,000 INR (Dev: ₹25K + Infra: ₹10K) • Page 2 of 2</div>
+    </div>
+  </div>
+
+</body>
+</html>

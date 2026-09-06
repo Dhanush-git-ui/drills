@@ -82,7 +82,22 @@ export default function ProductDetail() {
           <span className="font-heading text-sm font-bold text-brand-charcoal">{product.name}</span>
         </div>
 
-        <div className="flex items-center gap-4 w-full sm:w-auto">
+        <div className="flex items-center gap-3 w-full sm:w-auto flex-wrap">
+          {/* WhatsApp Direct Product Booking */}
+          <a
+            href={`https://wa.me/919666316818?text=${encodeURIComponent(
+              `Hello PSRS Rock Drills, I want to book / inquire about the product: ${product.name} (Category: ${product.category}, SKU: ${product.id}). Power/Engine: ${customization.engineType || 'Standard'}, Mast/Thread: ${customization.mastLength || customization.spindleThread || 'Standard'}. Please share pricing, availability, and booking details.`
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-grow sm:flex-grow-0 px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-heading text-xs font-semibold uppercase tracking-widest rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-md shadow-emerald-600/20 active:scale-95"
+          >
+            <svg viewBox="0 0 32 32" className="w-4 h-4 fill-white shrink-0" xmlns="http://www.w3.org/2000/svg">
+              <path d="M16 3C9.373 3 4 8.373 4 15c0 2.385.655 4.615 1.792 6.528L4 29l7.688-1.775A11.946 11.946 0 0016 28c6.627 0 12-5.373 12-12S22.627 3 16 3zm0 2c5.523 0 10 4.477 10 10S21.523 27 16 27a9.946 9.946 0 01-4.99-1.34l-.36-.211-3.744.865.882-3.629-.233-.376A9.955 9.955 0 016 15c0-5.523 4.477-10 10-10zm-3.07 5.5c-.198 0-.52.074-.793.369-.272.295-1.04 1.016-1.04 2.477s1.065 2.873 1.213 3.072c.149.198 2.095 3.198 5.076 4.362.708.273 1.26.435 1.69.557.71.202 1.357.174 1.868.105.57-.076 1.754-.716 2.002-1.408.248-.692.248-1.285.174-1.408-.074-.124-.272-.198-.57-.347-.297-.149-1.754-.866-2.025-.965-.272-.099-.47-.149-.668.149-.198.297-.767.965-.94 1.163-.173.198-.347.223-.644.074-.297-.149-1.254-.462-2.388-1.474-.883-.787-1.479-1.76-1.652-2.057-.173-.297-.018-.457.13-.605.133-.133.297-.347.446-.52.149-.174.198-.298.298-.497.099-.198.049-.372-.025-.52-.074-.149-.668-1.61-.915-2.203-.24-.578-.486-.5-.668-.509l-.568-.01z" />
+            </svg>
+            <span>Book on WhatsApp</span>
+          </a>
+
           {isAlreadyInQuote ? (
             <button
               onClick={() => removeFromQuote(product.id)}
@@ -101,7 +116,7 @@ export default function ProductDetail() {
           
           <Link
             to="/quote"
-            className="px-6 py-3 border border-brand-bordergray hover:border-brand-charcoal text-brand-charcoal font-heading text-xs font-semibold uppercase tracking-widest rounded-xl transition-all"
+            className="px-6 py-3 border border-brand-bordergray hover:border-brand-charcoal text-brand-charcoal font-heading text-xs font-semibold uppercase tracking-widest rounded-xl transition-all text-center"
           >
             Checkout List
           </Link>
@@ -273,6 +288,31 @@ export default function ProductDetail() {
             </h4>
 
             <div className="space-y-3">
+              {/* WhatsApp Quick Booking */}
+              <a
+                href={`https://wa.me/919666316818?text=${encodeURIComponent(
+                  `Hello PSRS Rock Drills, I want to book / inquire about the product: ${product.name} (Category: ${product.category}, SKU: ${product.id}). Custom Specs: Power: ${customization.engineType || 'Standard'}, Mast/Thread: ${customization.mastLength || customization.spindleThread || 'Standard'}. Please share quotation and delivery timeline.`
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between p-4 bg-emerald-50 border-2 border-emerald-300 rounded-xl hover:bg-emerald-100 hover:border-emerald-400 transition-all duration-300 group shadow-sm"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-emerald-500 text-white flex items-center justify-center shadow-sm shrink-0">
+                    <svg viewBox="0 0 32 32" className="w-5 h-5 fill-white" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M16 3C9.373 3 4 8.373 4 15c0 2.385.655 4.615 1.792 6.528L4 29l7.688-1.775A11.946 11.946 0 0016 28c6.627 0 12-5.373 12-12S22.627 3 16 3zm0 2c5.523 0 10 4.477 10 10S21.523 27 16 27a9.946 9.946 0 01-4.99-1.34l-.36-.211-3.744.865.882-3.629-.233-.376A9.955 9.955 0 016 15c0-5.523 4.477-10 10-10zm-3.07 5.5c-.198 0-.52.074-.793.369-.272.295-1.04 1.016-1.04 2.477s1.065 2.873 1.213 3.072c.149.198 2.095 3.198 5.076 4.362.708.273 1.26.435 1.69.557.71.202 1.357.174 1.868.105.57-.076 1.754-.716 2.002-1.408.248-.692.248-1.285.174-1.408-.074-.124-.272-.198-.57-.347-.297-.149-1.754-.866-2.025-.965-.272-.099-.47-.149-.668.149-.198.297-.767.965-.94 1.163-.173.198-.347.223-.644.074-.297-.149-1.254-.462-2.388-1.474-.883-.787-1.479-1.76-1.652-2.057-.173-.297-.018-.457.13-.605.133-.133.297-.347.446-.52.149-.174.198-.298.298-.497.099-.198.049-.372-.025-.52-.074-.149-.668-1.61-.915-2.203-.24-.578-.486-.5-.668-.509l-.568-.01z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h5 className="font-heading text-xs font-bold uppercase tracking-wider text-emerald-950">Book via WhatsApp</h5>
+                    <span className="font-sans text-[10px] text-emerald-700 font-semibold block">+91 96663 16818 (Live Desk)</span>
+                  </div>
+                </div>
+                <span className="font-heading text-[10px] font-bold text-emerald-700 uppercase tracking-wider group-hover:translate-x-0.5 transition-transform shrink-0">
+                  Chat Now →
+                </span>
+              </a>
+
               <Link
                 to="/brochure"
                 className="flex items-center justify-between p-4 bg-white border border-brand-bordergray/60 rounded-xl hover:border-brand-red transition-all duration-300 group"

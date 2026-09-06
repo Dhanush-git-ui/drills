@@ -70,7 +70,7 @@ export default function Contact() {
 
             <div className="space-y-4">
               <a
-                href="tel:+918049201200"
+                href="tel:+919666316818"
                 className="flex items-center gap-4 p-4 rounded-2xl transition-all duration-200 hover:bg-white/10 group"
                 style={{ border: '1px solid rgba(255,255,255,0.1)' }}
               >
@@ -79,7 +79,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <p className="font-heading text-xs font-bold uppercase tracking-wider text-white/50 mb-0.5">Phone</p>
-                  <p className="font-mono text-base font-bold text-white group-hover:text-brand-red transition-colors">+91 80 4920 1200</p>
+                  <p className="font-mono text-base font-bold text-white group-hover:text-brand-red transition-colors">+91 96663 16818</p>
                 </div>
               </a>
 
@@ -112,7 +112,7 @@ export default function Contact() {
             </div>
 
             <a
-              href="https://wa.me/918049201200"
+              href="https://wa.me/919666316818"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-3 px-6 py-3.5 rounded-2xl font-heading text-sm font-bold text-white uppercase tracking-wider transition-all duration-200 hover:scale-105"

@@ -407,27 +407,32 @@ export default function Products() {
                     className="group border border-brand-bordergray rounded-2xl overflow-hidden bg-white hover:border-brand-red transition-all duration-300 flex flex-col justify-between hover:-translate-y-0.5 hover:shadow-lg"
                   >
                     {/* Visual box */}
-                    <div className="relative aspect-[4/3] flex items-center justify-center overflow-hidden bg-brand-softwhite">
+                    <Link
+                      to={`/products/${prod.categorySlug}/${prod.slug}`}
+                      className="relative aspect-[4/3] flex items-center justify-center overflow-hidden bg-brand-softwhite block cursor-pointer group/img"
+                    >
                       {/* Subtle red glow accent */}
                       <div className="absolute top-0 right-0 w-40 h-40 rounded-full opacity-15 blur-3xl" style={{ background: 'radial-gradient(circle, #C8102E 0%, transparent 70%)' }} />
                       <img
                         src={prod.imageUrl}
                         alt={prod.name}
                         loading="lazy"
-                        className="relative z-10 w-full h-full object-contain p-2.5 group-hover:scale-105 transition-transform duration-500 drop-shadow-lg"
+                        className="relative z-10 w-full h-full object-contain p-2.5 group-hover/img:scale-105 transition-transform duration-500 drop-shadow-lg"
                         onError={(e) => {
                           (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=300';
                         }}
                       />
-
-                    </div>
+                    </Link>
 
                     {/* Metadata */}
                     <div className="p-5 space-y-3 flex-grow flex flex-col justify-between">
                       <div className="space-y-1.5">
-                        <h3 className="font-heading text-base font-bold text-brand-charcoal group-hover:text-brand-red transition-colors leading-snug">
+                        <Link
+                          to={`/products/${prod.categorySlug}/${prod.slug}`}
+                          className="block font-heading text-base font-bold text-brand-charcoal hover:text-brand-red transition-colors leading-snug cursor-pointer"
+                        >
                           {prod.name}
-                        </h3>
+                        </Link>
                         <p className="font-sans text-xs font-semibold text-brand-red uppercase tracking-wider">
                           {prod.tagline}
                         </p>
@@ -493,16 +498,32 @@ export default function Products() {
                       )}
 
                       {/* CTA Buttons */}
-                      <div className="flex items-center gap-2.5">
+                      <div className="flex items-center gap-2 pt-1">
                         <Link
                           to={`/products/${prod.categorySlug}/${prod.slug}`}
-                          className="flex-grow text-center py-2.5 border border-brand-charcoal hover:border-brand-red hover:text-brand-red text-brand-charcoal font-heading text-xs font-bold uppercase tracking-wider rounded-lg transition-all duration-200"
+                          className="flex-grow text-center py-2.5 px-3 border border-brand-charcoal hover:border-brand-red hover:text-brand-red text-brand-charcoal font-heading text-xs font-bold uppercase tracking-wider rounded-lg transition-all duration-200"
                         >
                           View Details
                         </Link>
+                        
+                        {/* WhatsApp Booking / Inquiry Button */}
+                        <a
+                          href={`https://wa.me/919666316818?text=${encodeURIComponent(
+                            `Hello PSRS Rock Drills, I want to book / inquire about the product: ${prod.name} (Category: ${prod.category}). Please share pricing and availability details.`
+                          )}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white transition-all flex items-center justify-center shrink-0 shadow-sm hover:scale-105 active:scale-95"
+                          title="Book / Inquire on WhatsApp (+91 96663 16818)"
+                        >
+                          <svg viewBox="0 0 32 32" className="w-4 h-4 fill-white" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 3C9.373 3 4 8.373 4 15c0 2.385.655 4.615 1.792 6.528L4 29l7.688-1.775A11.946 11.946 0 0016 28c6.627 0 12-5.373 12-12S22.627 3 16 3zm0 2c5.523 0 10 4.477 10 10S21.523 27 16 27a9.946 9.946 0 01-4.99-1.34l-.36-.211-3.744.865.882-3.629-.233-.376A9.955 9.955 0 016 15c0-5.523 4.477-10 10-10zm-3.07 5.5c-.198 0-.52.074-.793.369-.272.295-1.04 1.016-1.04 2.477s1.065 2.873 1.213 3.072c.149.198 2.095 3.198 5.076 4.362.708.273 1.26.435 1.69.557.71.202 1.357.174 1.868.105.57-.076 1.754-.716 2.002-1.408.248-.692.248-1.285.174-1.408-.074-.124-.272-.198-.57-.347-.297-.149-1.754-.866-2.025-.965-.272-.099-.47-.149-.668.149-.198.297-.767.965-.94 1.163-.173.198-.347.223-.644.074-.297-.149-1.254-.462-2.388-1.474-.883-.787-1.479-1.76-1.652-2.057-.173-.297-.018-.457.13-.605.133-.133.297-.347.446-.52.149-.174.198-.298.298-.497.099-.198.049-.372-.025-.52-.074-.149-.668-1.61-.915-2.203-.24-.578-.486-.5-.668-.509l-.568-.01z" />
+                          </svg>
+                        </a>
+
                         <button
                           onClick={() => addToQuote(prod)}
-                          className="px-4 py-2.5 text-white font-heading text-xs font-bold uppercase tracking-wider rounded-lg transition-all duration-200 hover:scale-105 active:scale-95"
+                          className="px-3.5 py-2.5 text-white font-heading text-xs font-bold uppercase tracking-wider rounded-lg transition-all duration-200 hover:scale-105 active:scale-95 whitespace-nowrap"
                           style={{ background: 'linear-gradient(135deg, #C8102E 0%, #A0001C 100%)', boxShadow: '0 3px 10px rgba(200,16,46,0.25)' }}
                         >
                           Add to Cart

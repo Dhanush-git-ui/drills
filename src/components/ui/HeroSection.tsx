@@ -5,8 +5,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Sparkles,
-  Layers,
-  Eye,
   Activity,
   ShieldCheck,
   Drill,
@@ -18,7 +16,6 @@ import {
 import { Link } from "react-router-dom";
 import BlueprintBlobBackground from "./BlueprintBlobBackground";
 import AirtechMotor3DViewer from "./AirtechMotor3DViewer";
-import CompanyLogo from "../brochure/CompanyLogo";
 
 // ─── PSRS Rock Drills Product Showcase Slides (Core Machinery Itinerary) ────
 const SLIDES = [
@@ -117,12 +114,19 @@ const SLIDES = [
 // Slideshow interval (3.2 seconds)
 const INTERVAL_MS = 3200;
 
-// ─── 3D Disassembly Hotspots ────────────────────────────────────────────────
+interface CalloutSpec {
+  label: string;
+  value: string;
+}
+
 interface Callout {
   id: string;
+  tag: string;
   title: string;
+  category: string;
   desc: string;
   coordLabel: string;
+  specs: CalloutSpec[];
   top: string;
   left: string;
 }
@@ -130,35 +134,67 @@ interface Callout {
 const CALLOUTS: Callout[] = [
   {
     id: "bearing",
-    title: "Front & Rear Sealed Bearings",
-    desc: "Matched precision bearings support high radial and axial loads with zero maintenance under extreme mining cycles.",
-    coordLabel: "BEARING // SEALED IP67",
-    top: "28%",
-    left: "18%",
-  },
-  {
-    id: "rotor",
-    title: "Precision-Balanced Rotor Assembly",
-    desc: "Dynamically balanced stacked-lamination rotor minimizes vibration at 3,000 RPM rated duty.",
-    coordLabel: "ROTOR // 3000 RPM DYNAMIC",
-    top: "70%",
-    left: "32%",
+    tag: "01",
+    title: "Sealed Bearings",
+    category: "ROTARY DRIVE",
+    desc: "Matched precision deep-groove bearings engineered for severe radial & axial shock loads with zero lubrication maintenance.",
+    coordLabel: "BEARING // IP67 SEALED // 52100 STEEL",
+    specs: [
+      { label: "Dynamic Load", value: "48.5 kN Rating" },
+      { label: "Protection", value: "IP67 Dual Lip Seal" },
+      { label: "Material", value: "52100 Chrome Steel" },
+      { label: "Service Life", value: "20,000+ Hours" },
+    ],
+    top: "18%",
+    left: "20%",
   },
   {
     id: "stator",
-    title: "High-Density Copper Stator Winding",
-    desc: "Precision-wound copper coils maximize magnetic flux and deliver sustained 90%+ electrical efficiency.",
-    coordLabel: "COPPER // 90% EFFICIENCY",
-    top: "26%",
+    tag: "02",
+    title: "Stator Housing & Coils",
+    category: "ELECTROMAGNETIC CORE",
+    desc: "High-density oxygen-free copper coils with Class H insulation provide sustained 90%+ electrical efficiency in high-ambient drilling.",
+    coordLabel: "STATOR // 92.8% EFF // CLASS H 180°C",
+    specs: [
+      { label: "Winding", value: "99.9% OFHC Copper" },
+      { label: "Efficiency", value: "92.8% at Full Load" },
+      { label: "Insulation", value: "Class H (180°C Max)" },
+      { label: "Core", value: "Silicon Steel M400" },
+    ],
+    top: "18%",
+    left: "40%",
+  },
+  {
+    id: "rotor",
+    tag: "03",
+    title: "Precision Rotor Shaft",
+    category: "POWER TRANSMISSION",
+    desc: "ISO G1.0 dynamically balanced rotor with forged high-tensile shaft prevents harmful harmonics during continuous 3,000 RPM operation.",
+    coordLabel: "ROTOR // 3000 RPM // ISO G1.0 BALANCED",
+    specs: [
+      { label: "Balance Grade", value: "ISO G1.0 Precision" },
+      { label: "Shaft Alloy", value: "EN24T Forged Steel" },
+      { label: "Max Speed", value: "3,000 RPM Rated" },
+      { label: "Peak Torque", value: "280 Nm Output" },
+    ],
+    top: "18%",
     left: "60%",
   },
   {
     id: "cooling",
-    title: "Finned Housing & Rear Cooling Fan",
-    desc: "Ribbed heat-sink fins paired with rear-fan airflow sustain continuous peak torque without thermal derating.",
-    coordLabel: "COOLING // IP55 ENCLOSURE",
-    top: "68%",
-    left: "82%",
+    tag: "04",
+    title: "Cooling Fan & Housing",
+    category: "THERMAL MANAGEMENT",
+    desc: "Aerodynamically shaped forced-draft cooling fan and heavy finned heat-sink frame maintain continuous peak duty without thermal derating.",
+    coordLabel: "COOLING // 220 CFM // IP55 ENCLOSURE",
+    specs: [
+      { label: "Airflow", value: "220 CFM Forced Draft" },
+      { label: "Frame Alloy", value: "Cast Aluminum A380" },
+      { label: "Ambient Temp", value: "-20°C to +55°C" },
+      { label: "Enclosure", value: "IP55 Dust & Splash" },
+    ],
+    top: "18%",
+    left: "80%",
   },
 ];
 
@@ -181,7 +217,9 @@ export default function HeroSection() {
   const heroOpacity = rawScrollVal < 0.12 ? 1 : Math.max(0, 1 - (rawScrollVal - 0.12) / 0.12);
   const heroY = rawScrollVal < 0.25 ? -(rawScrollVal / 0.25) * 100 : -100;
   const viewerOpacity = rawScrollVal < 0.18 ? 0 : rawScrollVal < 0.32 ? (rawScrollVal - 0.18) / 0.14 : 1;
-  const hotspotsOpacity = rawScrollVal < 0.72 ? 0 : Math.min(1, (rawScrollVal - 0.72) / 0.12);
+  // Reveal part name labels ONLY after motor disassembly completes (scroll >= 0.70)
+  const isDisassembled = rawScrollVal >= 0.70;
+  const hotspotsOpacity = rawScrollVal < 0.70 ? 0 : Math.min(1, (rawScrollVal - 0.70) / 0.04);
 
   // Slideshow state
   const [current, setCurrent] = useState(0);
@@ -211,32 +249,6 @@ export default function HeroSection() {
       <div className="sticky top-0 w-full h-screen overflow-hidden flex flex-col justify-between">
         {/* Layered Clean Technical Background in Red & White */}
         <BlueprintBlobBackground />
-
-        {/* Top Control Bar: Mode Switcher */}
-        <div className="absolute top-[80px] right-6 md:right-12 z-40 pointer-events-auto">
-          <div className="flex items-center gap-1.5 p-1 bg-white/90 backdrop-blur-md rounded-full shadow-md border border-brand-bordergray">
-            <button
-              onClick={() => setRenderMode("blueprint")}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-heading font-bold flex items-center gap-1.5 transition-all ${
-                renderMode === "blueprint"
-                  ? "bg-brand-red text-white shadow-sm"
-                  : "text-brand-charcoal hover:text-brand-red"
-              }`}
-            >
-              <Eye size={13} /> Blueprint
-            </button>
-            <button
-              onClick={() => setRenderMode("photorealistic")}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-heading font-bold flex items-center gap-1.5 transition-all ${
-                renderMode === "photorealistic"
-                  ? "bg-brand-charcoal text-white shadow-sm"
-                  : "text-brand-graphite hover:text-brand-charcoal"
-              }`}
-            >
-              <Layers size={13} /> 3D Mode
-            </button>
-          </div>
-        </div>
 
         {/* ══════════════════════════════════════════════════════════════
             STAGE 1 — HIGH-IMPACT PRODUCT SLIDESHOW SHOWCASE
@@ -508,8 +520,8 @@ export default function HeroSection() {
             STAGE 2 — 3D DISASSEMBLY VIEWER (scroll 0.25 → 1.0)
         ══════════════════════════════════════════════════════════════ */}
         <motion.div
-          style={{ opacity: viewerOpacity }}
-          className="absolute inset-0 z-10 pointer-events-none"
+          style={{ opacity: viewerOpacity, zIndex: 10 }}
+          className="absolute inset-0 pointer-events-none"
         >
           <AirtechMotor3DViewer
             scrollProgress={rawScrollVal}
@@ -519,57 +531,159 @@ export default function HeroSection() {
         </motion.div>
 
         {/* ══════════════════════════════════════════════════════════════
-            STAGE 3 — INTERACTIVE HOTSPOTS (scroll 0.72 → 1.0)
+            STAGE 3 — CLEAN TECHNICAL PART LABELS (near each part)
         ══════════════════════════════════════════════════════════════ */}
-        <motion.div
-          style={{ opacity: hotspotsOpacity }}
-          className="absolute inset-0 z-20 pointer-events-none"
-        >
-          {CALLOUTS.map((spot) => {
-            const isActive = activeHotspotId === spot.id;
-            return (
-              <div
-                key={spot.id}
-                style={{ top: spot.top, left: spot.left }}
-                className="absolute -translate-x-1/2 -translate-y-1/2 pointer-events-auto"
-              >
-                <div className="relative">
-                  <button
-                    onClick={() => setActiveHotspotId(isActive ? null : spot.id)}
-                    className={`relative w-9 h-9 rounded-full flex items-center justify-center transition-transform ${
-                      isActive
-                        ? "scale-125 bg-brand-red text-white shadow-xl shadow-red-600/40"
-                        : "bg-white/95 text-brand-red hover:scale-110 shadow-lg border-2 border-red-300"
-                    }`}
-                  >
-                    <span className="w-2.5 h-2.5 rounded-full bg-brand-red animate-ping absolute" />
-                    <Sparkles size={14} className="relative z-10" />
-                  </button>
+        {isDisassembled && (
+          <div
+            style={{ zIndex: 40 }}
+            className="absolute inset-0 pointer-events-none"
+          >
+              {CALLOUTS.map((spot) => {
+                const isActive = activeHotspotId === spot.id;
+                
+                // Smart horizontal alignment to avoid screen edge clipping
+                const cardTranslateClass =
+                  spot.id === "cooling"
+                    ? "-translate-x-[80%]"
+                    : spot.id === "bearing"
+                    ? "-translate-x-[20%]"
+                    : "-translate-x-1/2";
+                const caretTranslateClass =
+                  spot.id === "cooling"
+                    ? "right-16"
+                    : spot.id === "bearing"
+                    ? "left-16"
+                    : "left-1/2 -translate-x-1/2";
 
-                  <motion.div
-                    initial={false}
-                    animate={{ opacity: isActive ? 1 : 0.9, scale: isActive ? 1.05 : 1 }}
-                    className={`mt-3 w-64 md:w-72 p-4 bg-white/95 backdrop-blur-xl border ${
-                      isActive
-                        ? "border-brand-red shadow-2xl ring-2 ring-red-400/30"
-                        : "border-brand-bordergray shadow-lg"
-                    } rounded-2xl transition-all`}
+                return (
+                  <div
+                    key={spot.id}
+                    style={{ top: spot.top, left: spot.left, zIndex: isActive ? 50 : 40 }}
+                    className="absolute -translate-x-1/2 -translate-y-1/2 pointer-events-auto"
+                    onMouseEnter={() => setActiveHotspotId(spot.id)}
+                    onMouseLeave={() => setActiveHotspotId(null)}
                   >
-                    <span className="font-mono text-[9px] font-bold text-brand-red tracking-wider uppercase block">
-                      {spot.coordLabel}
-                    </span>
-                    <h4 className="font-heading text-sm font-bold text-brand-charcoal mt-1">
-                      {spot.title}
-                    </h4>
-                    <p className="font-sans text-xs text-brand-graphite mt-1 leading-relaxed">
-                      {spot.desc}
-                    </p>
-                  </motion.div>
-                </div>
-              </div>
-            );
-          })}
-        </motion.div>
+                    <div className="relative flex flex-col items-center">
+                      {/* High-Prominence Technical Name Pill */}
+                      <button
+                        onClick={() => setActiveHotspotId(isActive ? null : spot.id)}
+                        className={`relative flex items-center gap-2.5 px-4 py-2.5 rounded-full border-2 transition-all duration-300 cursor-pointer ${
+                          isActive
+                            ? "bg-brand-red text-white border-white shadow-[0_0_30px_rgba(200,16,46,0.9)] scale-110 ring-4 ring-brand-red/40 z-30"
+                            : "bg-white text-brand-charcoal border-brand-red/60 hover:border-brand-red shadow-lg hover:shadow-xl hover:scale-105"
+                        }`}
+                      >
+                        {/* Glowing Pin Indicator */}
+                        <span
+                          className={`w-2.5 h-2.5 rounded-full shrink-0 ${
+                            isActive
+                              ? "bg-white ring-4 ring-white/40 animate-ping"
+                              : "bg-brand-red ring-2 ring-brand-red/30 animate-pulse"
+                          }`}
+                        />
+                        <span className="font-heading text-xs font-black whitespace-nowrap tracking-wide">
+                          {spot.title}
+                        </span>
+                      </button>
+
+                      {/* Leader pin pointing towards 3D motor component */}
+                      <div className="w-[2px] h-4 bg-gradient-to-b from-brand-red to-transparent mx-auto pointer-events-none" />
+
+                      {/* ULTRA-PROMINENT TACTICAL HUD SPECIFICATION CARD */}
+                      <AnimatePresence>
+                        {isActive && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 6, scale: 0.95 }}
+                            transition={{ duration: 0.18, ease: "easeOut" }}
+                            className={`absolute top-full mt-2 w-[350px] sm:w-[390px] z-50 pointer-events-auto text-left ${cardTranslateClass}`}
+                          >
+                            <div className="relative p-5 bg-[#080a10] text-white rounded-2xl shadow-[0_30px_80px_rgba(0,0,0,0.98),0_0_40px_rgba(200,16,46,0.6)] border-2 border-brand-red ring-1 ring-white/20">
+                              {/* Top glowing red hairline accent */}
+                              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand-red via-rose-400 to-brand-red rounded-t-2xl" />
+
+                              {/* Caret Pointer Arrow */}
+                              <div
+                                className={`absolute -top-2 w-4 h-4 bg-[#080a10] border-t-2 border-l-2 border-brand-red rotate-45 z-10 ${caretTranslateClass}`}
+                              />
+
+                              {/* Corner Reticles (CAD Blueprint Crosshairs) */}
+                              <div className="absolute top-2 left-2 w-2 h-2 border-t-2 border-l-2 border-brand-red/60 pointer-events-none" />
+                              <div className="absolute top-2 right-2 w-2 h-2 border-t-2 border-r-2 border-brand-red/60 pointer-events-none" />
+
+                              {/* Top Header Row */}
+                              <div className="flex items-center justify-between gap-2 mb-2.5 relative z-20">
+                                <div className="flex items-center gap-2">
+                                  <span className="px-2.5 py-0.5 rounded-md bg-brand-red text-white font-mono text-[11px] font-black tracking-wider shadow-sm shadow-red-600/50">
+                                    {spot.tag}
+                                  </span>
+                                  <span className="font-mono text-[10px] font-black text-red-400 uppercase tracking-widest">
+                                    {spot.category}
+                                  </span>
+                                </div>
+                                <span className="inline-flex items-center gap-1.5 font-mono text-[9px] font-bold text-slate-200 bg-white/10 border border-white/15 px-2.5 py-1 rounded-full uppercase tracking-wider">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                                  ISO 9001 SPEC
+                                </span>
+                              </div>
+
+                              {/* Component Title & S/N Subtitle */}
+                              <div className="relative z-20 mb-2">
+                                <h4 className="font-heading text-base font-black text-white tracking-wide leading-tight">
+                                  {spot.title}
+                                </h4>
+                                <div className="font-mono text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">
+                                  REF: {spot.coordLabel}
+                                </div>
+                              </div>
+
+                              {/* Technical Description Box */}
+                              <div className="relative z-20 bg-[#121622] p-2.5 rounded-xl border border-white/10 mb-3">
+                                <p className="font-sans text-xs text-slate-100 leading-relaxed font-normal">
+                                  {spot.desc}
+                                </p>
+                              </div>
+
+                              {/* 4 Key Specs Grid */}
+                              <div className="grid grid-cols-2 gap-2 relative z-20">
+                                {spot.specs.map((spec) => (
+                                  <div
+                                    key={spec.label}
+                                    className="relative overflow-hidden bg-[#131722] hover:bg-[#181d2c] px-3 py-2 rounded-xl border border-white/10 transition-colors shadow-inner"
+                                  >
+                                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand-red" />
+                                    <div className="text-[9px] font-mono font-bold uppercase text-slate-400 tracking-wider pl-1">
+                                      {spec.label}
+                                    </div>
+                                    <div className="text-xs font-mono font-black text-white mt-0.5 tracking-tight pl-1">
+                                      {spec.value}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+
+                              {/* Quality Assurance Footer */}
+                              <div className="-mx-5 -mb-5 mt-4 px-5 py-3 rounded-b-2xl bg-[#040608] border-t border-white/10 flex items-center justify-between text-[10px] font-mono font-bold relative z-20">
+                                <span className="flex items-center gap-1.5 text-emerald-400 font-bold">
+                                  <ShieldCheck size={14} className="text-emerald-400 shrink-0" />
+                                  HEAVY MINING GRADE
+                                </span>
+                                <span className="text-slate-300 font-bold flex items-center gap-1.5">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                                  100% FACTORY TESTED
+                                </span>
+                              </div>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+        )}
 
         {/* ── Bottom HUD Footer: Scroll Prompt & Telemetry ── */}
         <div className="absolute bottom-3 left-6 md:left-12 z-30 flex items-center gap-3 pointer-events-none select-none">

@@ -532,7 +532,7 @@ export const BrochureMaterialsContactPage: React.FC = () => {
 
               <div>
                 <span className="font-mono text-[8px] text-brand-red font-bold uppercase block">Phone / WhatsApp</span>
-                <span className="font-bold text-brand-charcoal block text-[11px]">+91 80 4920 1200</span>
+                <span className="font-bold text-brand-charcoal block text-[11px]">+91 96663 16818</span>
                 <span className="text-[10px] text-brand-graphite block">+91 40 2377 0000</span>
               </div>
             </div>
