@@ -20,36 +20,42 @@ export default function ProductDetail() {
 
   const [productsList, setProductsList] = useState<Product[]>(PRODUCTS);
 
-  useEffect(() => {
+    useEffect(() => {
     const fetchDynamicProducts = async () => {
-      const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      const apiUrl = isLocal 
-        ? 'http://localhost:3000/api/inventory' 
-        : 'https://psrs-admin-dhanush-git-uis-projects.vercel.app/api/inventory';
+      const endpoints = [
+        'https://psrs-admin.vercel.app/api/inventory',
+        'https://psrs-admin-dhanush-git-uis-projects.vercel.app/api/inventory',
+        'http://localhost:3000/api/inventory'
+      ];
 
-      try {
-        const response = await fetch(apiUrl);
-        if (!response.ok) throw new Error('API failed');
-        const data = await response.json();
-        if (data && data.length > 0) {
-          const mappedInventory = data
-            .filter((item: any) => item.sku !== 'PRM-AT-70L4R')
-            .map(convertInventoryToProduct);
-          
-          setProductsList([
-            ...BASE_PRODUCTS,
-            ...mappedInventory
-          ]);
+      for (const apiUrl of endpoints) {
+        try {
+          const response = await fetch(apiUrl);
+          if (response.ok) {
+            const data = await response.json();
+            if (Array.isArray(data) && data.length > 0) {
+              const mappedInventory = data
+                .filter((item: any) => item.sku !== 'PRM-AT-70L4R')
+                .map(convertInventoryToProduct);
+              
+              const productMap = new Map<string, Product>();
+              BASE_PRODUCTS.forEach(p => productMap.set(p.slug.toLowerCase(), p));
+              mappedInventory.forEach(p => productMap.set(p.slug.toLowerCase(), p));
+              
+              setProductsList(Array.from(productMap.values()));
+              return;
+            }
+          }
+        } catch (err) {
+          // Continue
         }
-      } catch (err) {
-        console.warn('Unable to connect to live products API. Using local offline fallback data.', err);
       }
     };
     fetchDynamicProducts();
   }, []);
 
   // Find current product
-  const product = productsList.find((p) => p.slug === slug);
+  const product = productsList.find((p) => p.slug === slug || p.id === slug || p.slug.toLowerCase() === slug?.toLowerCase() || p.id.toLowerCase() === slug?.toLowerCase());
 
   if (!product) {
     return (

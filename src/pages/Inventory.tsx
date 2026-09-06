@@ -23,7 +23,7 @@ export default function Inventory() {
       const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
       const apiUrl = isLocal 
         ? 'http://localhost:3000/api/inventory' 
-        : 'https://psrs-admin-dhanush-git-uis-projects.vercel.app/api/inventory';
+        : 'https://psrs-admin.vercel.app/api/inventory';
 
       try {
         const response = await fetch(apiUrl);
@@ -105,7 +105,7 @@ export default function Inventory() {
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
     const apiUrl = isLocal 
       ? 'http://localhost:3000/api/products/adjust-stock' 
-      : 'https://psrs-admin-dhanush-git-uis-projects.vercel.app/api/products/adjust-stock';
+      : 'https://psrs-admin.vercel.app/api/products/adjust-stock';
 
     try {
       const response = await fetch(apiUrl, {

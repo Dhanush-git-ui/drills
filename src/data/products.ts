@@ -57,7 +57,9 @@ export const CATEGORIES = [
   { name: 'Valves', slug: 'valves', desc: 'Rotary air distribution valves and cylinder heads.' },
   { name: 'Bearings & Seals', slug: 'bearings-seals', desc: 'Deep groove ball bearings, O-ring grease rings, and composites.' },
   { name: 'Fasteners', slug: 'fasteners', desc: 'High-tensile hex bolts, feather keys, and snap circlips.' },
-  { name: 'Air System', slug: 'air-system', desc: 'Inlet filter elements and exhaust deflector silencers.' }
+  { name: 'Air System', slug: 'air-system', desc: 'Inlet filter elements and exhaust deflector silencers.' },
+  { name: 'Drilling Tools & Bits', slug: 'tools-bits', desc: 'High-strength carburized drill rods, DTH hammers, and button bits.' },
+  { name: 'Drill Accessories', slug: 'accessories', desc: 'Heavy-duty drill clamps, lubricators, and coupling accessories.' }
 ];
 
 export const BASE_PRODUCTS: Product[] = [
@@ -673,52 +675,74 @@ export const BASE_PRODUCTS: Product[] = [
 // Helper to convert InventoryItem to Product
 export function convertInventoryToProduct(item: any): Product {
   const categorySlugMap: Record<string, string> = {
+    'Drilling Rigs & Machinery': 'rigs-machinery',
     'Rotation Motors': 'rotation-motors',
     'Crankcase': 'crankcase',
     'Piston Assembly': 'piston-assembly',
     'Valves': 'valves',
     'Bearings & Seals': 'bearings-seals',
     'Fasteners': 'fasteners',
-    'Air System': 'air-system'
+    'Air System': 'air-system',
+    'Drilling Tools & Bits': 'tools-bits',
+    'Drill Accessories': 'accessories',
+    'General': 'spare-parts'
   };
 
+  const itemCategory = item.category || (item.categoryId ? 'Drilling Rigs & Machinery' : 'General');
+  const catSlug = categorySlugMap[itemCategory] || 
+    (itemCategory ? itemCategory.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') : 'rigs-machinery');
+
+  // Support base64 image data URLs, full HTTP(S) URLs, or local path fallbacks
+  let primaryImage = '/images/inventory/IMG_3086.jpg';
+  if (Array.isArray(item.images) && item.images.length > 0 && item.images[0]) {
+    primaryImage = item.images[0];
+  } else if (item.imageUrl && typeof item.imageUrl === 'string' && item.imageUrl.trim()) {
+    primaryImage = item.imageUrl.trim();
+  } else if (item.image && typeof item.image === 'string' && item.image.trim()) {
+    primaryImage = item.image.trim();
+  }
+
+  const cleanSku = item.sku || item.productCode || item.code || ('PROD-' + Math.floor(1000 + Math.random() * 9000));
+
   return {
-    id: item.sku.toLowerCase(),
+    id: (item.id || cleanSku).toLowerCase(),
     name: item.name,
-    slug: item.sku.toLowerCase(),
-    category: item.category,
-    categorySlug: categorySlugMap[item.category] || 'spare-parts',
-    tagline: `OEM Part | Code: ${item.productCode} | Sanath Nagar Forging`,
-    description: item.description,
-    longDescription: item.longDescription || item.description,
+    slug: cleanSku.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+    category: itemCategory,
+    categorySlug: catSlug,
+    tagline: 'OEM Part | Code: ' + (item.productCode || item.code || cleanSku) + ' | Sanath Nagar Forging',
+    description: item.description || item.name,
+    longDescription: item.longDescription || item.description || item.name,
     features: [
-      `Material Structure: ${item.material}`,
-      `Precision Dimensions: ${item.dimensions}`,
-      `Overall Weight: ${item.weight}`,
-      `Warehouse Storage: ${item.warehouse} (Rack: ${item.rack}, Pos: ${item.rackPosition || 'N/A'})`
+      'Material Structure: ' + (item.material || 'Hardened Forged Steel'),
+      'Precision Dimensions: ' + (item.dimensions || 'Standard OEM'),
+      'Overall Weight: ' + (item.weight ? (typeof item.weight === 'number' ? item.weight + ' kg' : item.weight) : 'Standard OEM'),
+      item.warehouse ? ('Warehouse Storage: ' + item.warehouse + ' (Rack: ' + (item.rack || 'A') + ', Pos: ' + (item.rackPosition || '1') + ')') : 'Available for Direct Dispatch'
     ],
     benefits: [
       'High metallurgy resilience',
-      'Matches exact OEM fittings'
+      'Matches exact OEM fittings',
+      'Tested under high-pressure drilling conditions'
     ],
-    applications: item.compatibleMachine ? item.compatibleMachine.split(',') : ['Industrial Drilling'],
+    applications: item.compatibleMachine ? item.compatibleMachine.split(',') : ['Industrial Drilling', 'Borewell Operations'],
     specs: {
-      dimensions: item.dimensions,
-      weight: item.weight,
-      motorType: item.subCategory
+      dimensions: item.dimensions || 'Standard',
+      weight: item.weight ? (typeof item.weight === 'number' ? item.weight + ' kg' : item.weight) : undefined,
+      motorType: item.subCategory || item.modelNumber || 'Pneumatic Drill Drive',
+      holeDiameter: item.holeDiameter || item.diameter,
+      drillDepth: item.drillDepth || item.depth
     },
     hotspots: [],
     faqs: [],
     brochureUrl: '#',
     datasheetUrl: '#',
     image: 'bit',
-    imageUrl: item.images[0] || '/images/inventory/IMG_3086.jpg',
-    stockStatus: item.status as 'In Stock' | 'Low Stock' | 'Out of Stock',
-    stockQty: item.currentStock
+    imageUrl: primaryImage,
+    stockStatus: item.status || (item.currentStock > 10 ? 'In Stock' : item.currentStock > 0 ? 'Low Stock' : 'Out of Stock'),
+    stockQty: item.currentStock !== undefined ? item.currentStock : 1
   };
 }
 
-// Map the items from INVENTORY (excluding the full assembly rotation motor, which is represented by at-70l4r-std)
 const inventoryProducts = INVENTORY.filter(item => item.sku !== 'PRM-AT-70L4R').map(convertInventoryToProduct);
 
 export const PRODUCTS: Product[] = [

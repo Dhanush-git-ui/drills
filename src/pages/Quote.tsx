@@ -49,7 +49,7 @@ export default function Quote() {
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
     const apiUrl = isLocal 
       ? 'http://localhost:3000/api/quotations' 
-      : 'https://psrs-admin-dhanush-git-uis-projects.vercel.app/api/quotations';
+      : 'https://psrs-admin.vercel.app/api/quotations';
 
     try {
       const response = await fetch(apiUrl, {
